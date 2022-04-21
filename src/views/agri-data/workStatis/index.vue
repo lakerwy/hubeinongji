@@ -1,0 +1,176 @@
+<template>
+  <div class="opera">
+    <section class="topCards">
+      <div class="card" v-for="(item,index) in cardData" :key="index">
+        <div class="total" :style="{color: item.totalColor}">
+          <span :style="{textShadow: '0 0 20px '+item.totalColor}">{{ item.number }}</span> {{ item.unit }}
+        </div>
+        <div class="compared">{{ item.title }}</div>
+      </div>
+    </section>
+    <section class="left-chart leftBg">
+      <LeftInfo @getCardData="getCardData"/>
+    </section>
+    <section class="right-chart rightBg">
+      <RightInfo/>
+    </section>
+    <section class="center-chart">
+      <SctterMap :title="'作业'" />
+    </section>
+  </div>
+</template>
+
+<script>
+import LeftInfo from "./components/leftInfo";
+import RightInfo from "./components/rightInfo";
+import {valueTofixed} from "../../../util/util";
+import SctterMap from "../../../components/echartMap/sctterMap"
+
+export default {
+  name: "index",
+  components: {
+    LeftInfo,
+    RightInfo,
+    SctterMap
+  },
+  data() {
+    return {
+      cardData: [
+        {number: 0, unit: '万亩', totalColor: '#B7AFFF', title: '当年作业面积'},
+        {number: 0, unit: '时', totalColor: '#3cfad3', title: '当年作业时长'},
+        {number: 0, unit: '亩', totalColor: '#F4B351', title: '昨日新增面积'},
+        {number: 0, unit: '万亩', totalColor: '#00DCFD', title: '累计作业总面积'}
+      ],
+    }
+  },
+  mounted() {
+  },
+  methods: {
+    //获取头部卡片信息
+    getCardData(res){
+      this.cardData[0].number=valueTofixed(res.currentYearJobArea);
+      this.cardData[1].number=res.jobDuration;
+      this.cardData[2].number=res.yesterdayJobArea;
+      this.cardData[3].number=valueTofixed(res.totalJobArea);
+    },
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@vw: 19.2vw;
+@vh: 10.8vh;
+.opera {
+  position: relative;
+
+  .topCards {
+    position: absolute;
+    top: 20px;
+    left: 536px;
+    display: flex;
+
+    .card {
+      margin-right: 12px;
+      width: 202 /@vw;
+      min-width: 176px;
+      height: 94px;
+      border: 1px solid #1562ac;
+      box-sizing: content-box;
+      box-shadow: 0px 1px 19px #1562ac inset;
+
+      .total {
+        padding: 10px 0 5px 0;
+        text-align: center;
+        color: #B7AFFF;
+
+        span {
+          padding-right: 5px;
+          font-size: 32px;
+          font-style: italic;
+          text-shadow: 0 0 20px #B7AFFF;
+        }
+      }
+
+      .compared {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+
+        span {
+          font-size: 14px;
+          color: #70afe5;
+          padding-left: 10px;
+
+          i {
+            color: #17af6e;
+          }
+        }
+      }
+    }
+  }
+
+  .left-chart, .right-chart {
+    width: 477px;
+  }
+
+  .leftBg {
+    width: 477px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    z-index: 2;
+  }
+
+  .rightBg {
+    width: 477px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 2;
+  }
+
+  .center-chart {
+    position: absolute;
+    left: 510px;
+    top: 130px;
+    width: 900px;
+    height: 600 /@vh;
+
+    .mapChart {
+      width: 100%;
+      height: 100%;
+    }
+
+    .box {
+      position: absolute;
+      top: 0px;
+      width: 320px;
+      height: 294px;
+      border: 1px solid #64bfff;
+      background: rgba(6, 27, 58, 0.8);
+      z-index: 99;
+
+      .title {
+        width: 320px;
+        height: 41px;
+        padding-left: 10px;
+        font-family: SourceHanSansCN-Medium;
+        background: url("../../../assets/images/mapChartBg.png");
+        background-size: 100% 100%;
+        font-size: 16px;
+        font-weight: normal;
+        color: #ffffff;
+        line-height: 41px;
+      }
+
+      .histogChart {
+        width: 320px;
+        height: 253px;
+        z-index: 999;
+      }
+    }
+  }
+}
+
+</style>

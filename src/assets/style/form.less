@@ -1,0 +1,179 @@
+// 表单样式处理
+.my-form {
+  /deep/ .el-form-item__label {
+    color: @base-fontColor;
+  }
+  /deep/ .el-input__inner {
+    font-family: SourceHanSansCN-Regular;
+    background-color: transparent;
+    border: 1px solid #356e97;
+    height: 36px;
+    color: #ffffff;
+    padding: 0 9px;
+  }
+  .el-form-item__content {
+    line-height: 36px;
+  }
+  /deep/ .el-form-item__label {
+    line-height: 36px;
+  }
+  /deep/.el-icon-date:before{
+    color: #0e7ca2;
+  }
+  /deep/ .el-input__placeholder {
+    color: #80c5ff;
+  }
+  /deep/input::-webkit-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+
+  /deep/input::-moz-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+
+  /deep/input::-ms-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+
+  .el-range-editor .el-range-input {
+    background: transparent;
+  }
+  .datepicker {
+    /deep/ .el-input__prefix {
+      left: 85%;
+    }
+  }
+  .el-input--prefix .el-input__inner {
+    padding-left: 9px;
+  }
+  .el-icon-date {
+    line-height: 42px;
+  }
+  .el-icon-date:before {
+    content: url('../images/icon_date.png');
+  }
+  .el-form-item__error {
+    padding-top: 0;
+  }
+
+  .btns {
+    text-align: right;
+    margin-bottom: 0;
+    .el-button {
+      width: 80px;
+      height: 32px;
+      padding: 0;
+    }
+  }
+}
+
+// 下拉框样式
+.el-select-dropdown {
+  background-color: #06223b;
+  border: 0;
+  margin-top: 4px !important;
+  .el-select-dropdown__item {
+    color: #5181ac;
+  }
+  .el-select-dropdown__item.hover, .el-select-dropdown__item:hover {
+    background-color: rgba(0, 67, 124, .5);
+    color: #fff;
+  }
+  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected.hover {
+    background-color: rgba(0, 67, 124, .5);
+  }
+  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
+    background-color: rgba(0, 67, 124, .5);
+  }
+  .popper__arrow, .popper__arrow::after {
+    display: none; // 小三角不显示
+  }
+}
+
+// 日期组件面板样式
+.el-date-picker, .el-picker-panel {
+  background-color: rgba(18, 26, 46,.99);
+  color: @base-fontColor;
+  border: 0;
+  .el-input__inner {
+    background-color: transparent;
+    border: solid 1px #356e97;
+    height: 36px;
+    color: rgba(128, 197, 255,.3);
+    font-family: SourceHanSansCN-Regular;
+    font-size: 14px;
+  }
+  input::-webkit-input-placeholder {
+    color: rgba(128, 197, 255,.3);
+  }
+  input::-moz-input-placeholder {
+    color: rgba(128, 197, 255,.3);
+  }
+  input::-ms-input-placeholder {
+    color: rgba(128, 197, 255,.3);
+  }
+
+  .el-date-picker__header .el-date-picker__header-label,
+  .el-icon-d-arrow-left:before,
+  .el-icon-arrow-left:before,
+  .el-icon-arrow-right:before,
+  .el-icon-d-arrow-right:before,
+  .el-year-table td .cell,
+  .el-month-table td .cell {
+    color: @base-fontColor;
+  }
+  .el-date-table td.disabled div, 
+  .el-date-table td.next-month, 
+  .el-date-table td.prev-month, 
+  .el-year-table td.disabled .cell,
+  .el-month-table td.disabled .cell {
+    background: transparent;
+    color: rgba(170, 194, 214, .15);;
+  }
+  .el-date-table th, 
+  .el-date-picker__time-header, 
+  .el-date-picker__header--bordered {
+    color: @base-fontColor;
+    border-bottom: 1px solid #112841;
+  }
+  .el-picker-panel__footer {
+    background-color: rgba(18, 26, 46,.99);
+    color: #00acff;
+    border-top: 1px solid #112841;
+    .el-button--default {
+      width: 68px;
+      height: 32px;
+      border-radius: 16px;
+      border: solid 1px #00acff;
+      background: transparent;
+      color: #00acff;
+    }
+  }
+  .popper__arrow, .popper__arrow::after {
+    border-top-color: rgba(18, 26, 46,.99) !important;
+    border-bottom-color: rgba(18, 26, 46,.99) !important;
+  }
+}
+
+//dorpdown下拉框
+.dropdown {
+  background-color: #10234a;
+  border-radius: 0;
+  border: none;
+
+  .dropdown-item {
+    // color: #5181ac;
+    color: #acd3f3;
+  }
+  .dropdown-item:hover {
+    background-color: #03335c;
+    color: #FFF;
+  }
+}
+
+//取消dorpdown下拉框小三角
+.el-popper /deep/ .popper__arrow {
+  border-bottom-color: #1ebef4 !important;
+  left: 50% !important;
+  visibility: hidden;
+}

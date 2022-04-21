@@ -1,0 +1,205 @@
+// dialog样式整理
+.avue-dialog, .my-dialog {
+  .el-dialog {
+    background-color: rgba(7, 29, 71, .9);
+    box-shadow: inset 0px 0px 87px 0px 
+      rgba(20, 143, 255, 0.18);
+    border: solid 1px #64bfff;
+  }
+  
+  .el-dialog__header {
+    height: 40px;
+    line-height: 40px;
+    background-image: linear-gradient(92deg, 
+		rgba(0, 138, 255,.6) 0%, 
+		transparent 80%);
+    padding: 0 21px 0 15px;
+    border: 0;
+    flex-shrink: 0;
+    .avue-crud__dialog__header {
+      display: unset;
+    }
+    .el-dialog__title {
+      color: #fff;
+      font-size: 16px;
+      font-weight: normal;
+    }
+    .avue-crud__dialog__menu {
+      display: none;
+    }
+    .el-dialog__headerbtn {
+      top: 12px;
+      .el-dialog__close {
+        color: #1a92cb;
+        font-size: 18px;
+      }
+    }
+  }
+  
+  .el-dialog__body {
+    .avue-group .el-collapse, .avue-group .el-collapse-item__wrap {
+      background: transparent;
+    }
+    .el-collapse, .el-collapse-item__wrap {
+      border: 0;
+    }
+    .el-form-item {
+      margin-bottom: 15px;
+    }
+    .el-form-item__label {
+      color: @base-fontColor;
+      line-height: 36px;
+      font-family: SourceHanSansCN-Regular;
+    }
+    .el-input__inner, .vue-treeselect__control {
+      background-color: transparent;
+      border: 1px solid #55adff;
+      height: 36px;
+      color: @inputFontColor;
+      font-family: SourceHanSansCN-Regular;
+	    font-size: 14px;
+    }
+    .el-radio {
+      color: @base-fontColor;
+    }
+    .el-radio__inner {
+      background: transparent;
+      border: solid 1px #1a92cb;
+    }
+    .vue-treeselect__single-value {
+      color: @inputFontColor;
+    }
+    .el-textarea__inner {
+      font-family: SourceHanSansCN-Regular;
+	    font-size: 14px;
+      color: @inputFontColor;
+      border: 1px solid #55adff;
+      background: transparent;
+    }
+    .el-form-item__content {
+      line-height: 34px;
+    }
+    .el-input__placeholder, .el-textarea__placeholder {
+      color: #80c5ff;
+    }
+    input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+      color: rgba(128, 197, 255, .3);
+    }
+  
+    input::-moz-input-placeholder {
+      color: rgba(128, 197, 255, .3);
+    }
+  
+    input::-ms-input-placeholder {
+      color: rgba(128, 197, 255, .3);
+    }
+  
+    .el-range-editor .el-range-input {
+      background: transparent;
+    }
+    .datepicker {
+       .el-input__prefix {
+        left: 85%;
+      }
+    }
+    .el-input__icon {
+      line-height: normal;
+    }
+    .el-input--prefix .el-input__inner {
+      padding-left: 15px;
+    }
+    .el-icon-date {
+      line-height: 44px;
+    }
+    .el-icon-date:before {
+      content: url('../images/icon_date.png');
+    }
+  }
+  .el-card {
+    background: transparent;
+  }
+  .avue-dialog__footer, .el-dialog__footer {
+    background: transparent;
+    border: 0;
+    .el-button {
+      width: 90px;
+      height: 36px;
+      background-color: #0d274e;
+      border-radius: 18px;
+      border: solid 1px #55adff;
+      color: #67c8ff;
+      font-size: 14px;
+      i {
+        display: none;
+      }
+    }
+  }
+}
+
+/deep/ .dialog {
+  .el-dialog {
+    border: 1px solid #64bfff;
+    background-color: #071d47;
+    opacity: 0.9;
+    .el-dialog__header {
+      padding: 10px 10px;
+      background: -webkit-linear-gradient(
+          -2deg,
+          rgb(0, 138, 255) 0%,
+          rgba(0, 138, 255, 0) 100%
+      );
+      .el-dialog__title {
+        font-size: 16px;
+        color: #ffffff;
+      }
+    }
+    .el-dialog__headerbtn {
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      .el-dialog__close {
+        color: #1a90c8;
+      }
+    }
+    .el-dialog__body {
+      padding: 0;
+    }
+  }
+
+  .el-form-item__label {
+    color: @base-fontColor;
+  }
+  .el-input__inner {
+    font-family: SourceHanSansCN-Regular;
+    background-color: transparent;
+    border: 1px solid #356e97;
+    height: 36px;
+    color: #ffffff;
+  }
+  .el-form-item__content {
+    line-height: 36px;
+  }
+  .el-input__placeholder {
+    color: #80c5ff;
+  }
+  input::-webkit-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+
+  input::-moz-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+
+  input::-ms-input-placeholder {
+    color: rgba(128, 197, 255, .3);
+  }
+  .el-input--prefix .el-input__inner {
+    padding-left: 15px;
+  }
+  .el-icon-date {
+    line-height: 44px;
+  }
+  .el-icon-date:before {
+    content: url('../images/icon_date.png');
+  }
+}

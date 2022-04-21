@@ -1,0 +1,165 @@
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 1800px;
+  min-height: 900px;
+  font-size: 14px;
+  // overflow: hidden; // 对于拖拽的窗体超出不出现滚动条
+}
+.body {
+  overflow: auto;
+}
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  // background: #fff;
+}
+::-webkit-scrollbar-thumb {
+  width: 4px;
+  height: 4px;
+  border-radius: 3px;
+  background: #2c6996;
+}
+::-webkit-scrollbar-track {
+  width: 4px;
+  height: 4px;
+  // background: #eee;
+}
+::-webkit-scrollbar-corner {
+  width: 0;
+  height: 0;
+}
+
+// 全局变量
+@base-fontColor: #aac2d6; // 默认字体颜色
+@base-darkBlue: #04122c; // #117eb2 opacity 0.2  默认面板背景色
+// @base-darkBlue: #04122c; // #117eb2 opacity 0.2  默认面板背景色
+@inputFontColor: #80c5ff; // 输入框字体颜色
+// 普通按钮
+.primary-btn {
+  width: 80px;
+	height: 32px;
+  border-color: #144cec !important;
+  background-color: #144cec !important;
+}
+// 镂空按钮
+.primary-btn-plain {
+  width: 80px;
+	height: 32px;
+  color: #67c8ff !important;
+  border-color: rgba(85, 173, 255,.8) !important;
+  background-color: rgb(13, 39, 78) !important;
+  box-shadow:0 0 10px rgba(85, 173, 255,.5) inset;
+}
+//内阴影按钮
+.shadow-btn {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: rgb(13, 39, 78) !important;
+  border-color: rgba(85, 173, 255,.8) !important;
+  box-shadow:0 0 10px rgba(85, 173, 255,.5) inset;
+  color: #80c5ff;
+}
+.el-button.is-disabled.is-plain, .el-button.is-disabled.is-plain:focus, .el-button.is-disabled.is-plain:hover {
+  opacity: 0.6;
+}
+.table-text-btn {
+  color: #00deff;
+}
+
+// 面板头部jianbian
+.panel-header {
+  height: 34px;
+  padding: 0 15px;
+  background-image: linear-gradient(90deg, 
+  #0c579c 0%, 
+  #121a2e 65%,
+  transparent 100%);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .panel-close {
+    cursor: pointer;
+  }
+}
+.box-card {
+  border: 0;
+  .el-card__header {
+    padding: 0 20px;
+    height: 48px;
+    line-height: 48px;
+    border-bottom: 1px solid #0d2346;
+  }
+}
+// 地图页面的底部技术支持
+.map-footer {
+  width: 250px;
+  height: 28px;
+  line-height: 28px;
+  background-color: rgba(0, 0, 0, .6);
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+
+// 确认框样式
+.el-message-box {
+  background-color: rgba(7, 29, 71, .9) !important;
+  box-shadow: inset 0px 0px 87px 0px 
+    rgba(20, 143, 255, 0.18);
+  border: solid 1px #64bfff !important;
+
+  .el-message-box__header {
+    background: -webkit-gradient(92deg,	rgba(0, 138, 255,.6) 0%, transparent 80%);
+    background-image: linear-gradient(92deg, rgba(0, 138, 255,.6) 0%, transparent 80%);
+
+    .el-message-box__title {
+      color: #ffffff;
+      font-size: 14px;
+      font-family: Microsoft YaHei;
+      font-weight: normal;
+    }
+  }
+
+  .el-message-box__content {
+    .el-message-box__container {
+      .el-message-box__message {
+        color: @base-fontColor;;
+      }
+    }
+
+    .el-message-box__input {
+      .el-input {
+        .el-input__inner {
+          background: rgba(0, 207, 251, 0.05);
+          border: 1px solid #00cffb;
+          color: #ff1c28;
+        }
+
+      }
+    }
+  }
+
+  .el-message-box__btns {
+    button {
+      width: 76px;
+      background-color: rgb(13, 39, 78) !important;
+      border-color: rgba(85, 173, 255,.8) !important;
+      box-shadow:0 0 10px rgba(85, 173, 255,.5) inset;
+      color: #80c5ff;
+      border-radius: 16px;
+    }
+  }
+}
+
+
+@import 'form.less';
+@import 'table.less';
+@import 'dialog.less';
+@import 'tree.less';

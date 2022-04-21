@@ -1,0 +1,168 @@
+// 表格样式处理
+.my-table {
+  // avue修改
+  .avue-crud__menu {
+    background: transparent;
+  }
+  // avue修改
+  .el-loading-mask {
+    background: transparent;
+  }
+  .avue-crud__menu {
+    margin-bottom: 18px;
+    min-height: 32px;
+    .el-button {
+      width: 80px;
+      height: 32px;
+      min-height: 32px;
+      font-size: 14px;
+      margin-right: 16px;
+      margin-left: 0;
+    }
+  }
+  .avue-empty__desc {
+    color: @base-fontColor;
+  }
+  // selection显示的内容
+  .avue-crud__tip {
+    display: none;
+  }
+
+  .el-checkbox__inner {
+    background: transparent;
+    border: solid 1px @base-fontColor;
+  }
+  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background: #2289fd;
+    border: 1px solid #2289fd;
+  }
+  .el-table {
+    // 解决tooltip出现时页面出现抖动
+    // width: 99.99%;
+    height: 100%;
+    background: transparent;
+  }
+  .el-table td, .el-table th.is-leaf {
+    border-bottom: 0;
+    border-left: 0;
+    padding: 0;
+  }
+  .el-table tr {
+    height: 44px;
+    color: #c4d8e9;
+    font-size: 14px;
+    font-family: SourceHanSansCN-Regular;
+  }
+  .el-table th, .el-table tr {
+    background: transparent;
+  }
+  .el-table th {
+    height: 46px;
+    color: #fff;
+    // color: #67c8ff;
+    font-weight: 400;
+    // background: #022f5a;
+  }
+   // 有fixed的背景颜色
+  .el-table__fixed, .el-table__fixed-right {
+    background:#0f1c40 url(../images/background-item.png) repeat;
+  }
+  .el-table__fixed-header-wrapper {
+    // background: linear-gradient(to right,#0e264f 0%,#0e335f 50%, #0e264f 100%);
+    background: linear-gradient(to right,#0c376e 0%,#0b437f 50%, #0b3871 100%);
+  }
+  .el-table__fixed-right::before, .el-table__fixed::before {
+    height: 0;
+  }
+  .el-table__header-wrapper tr {
+    // background: linear-gradient(to right,#0e264f 0%,#0e335f 50%, #0e264f 100%);
+    background: linear-gradient(to right,#0c376e 0%,#0b437f 50%, #0b3871 100%);
+  // }
+  }
+  .el-table tbody tr:nth-child(2n) {
+    // background-color: #032546;
+    background: linear-gradient(to right,#0e264f 0%,#0e335f 50%, #0e264f 100%);
+  }
+  // 有fixed调整鼠标悬停的样式
+  tr.el-table__row.hover-row > td {
+    // background: #2265a4 !important;
+    background: #155b6a !important;
+  }
+  .el-table tbody tr:hover > td {
+    // background: #2265a4;
+    background: #155b6a;
+  }
+  .el-table::before {
+    height: 0;
+  }
+
+  // 多级表头的去掉边框
+  .el-table--border td, .el-table--border th, .el-table__body-wrapper .el-table--border.is-scrolling-left~.el-table__fixed {
+    border-right: 0;
+  }
+  .el-table--border, .el-table--group {
+    border: 0;
+  }
+  .el-table--border::after, .el-table--group::after {
+    width: 0;
+  }
+  // 多级表头的头部颜色
+  .el-table thead.is-group th {
+    background: transparent;
+  }
+  .el-table thead.is-group tr {
+    // background: #022f5a;
+    background: linear-gradient(to right,#0e264f 20%,#0e335f 50%, #0e264f);
+  }
+  // 多级表头上下级下边框
+  .el-table--border th, .el-table__fixed-right-patch {
+    border-bottom: 1px solid #0d3976;
+    // border-left: 1px solid #0d3976;
+  }
+
+  // 树形表格下拉
+  .el-table__expand-icon {
+    color: #fff;
+  }
+
+  .el-table__empty-text {
+    color: @base-fontColor;
+  }
+
+  //表格内按钮
+  .table-btn {
+    padding: 0;
+    width: 52px;
+    height: 24px;
+    line-height: 20px;
+    border-color: #00deff;
+    background: transparent;
+    color: #00deff;
+    font-family: SourceHanSansCN-Regular;
+    font-size: 14px;
+    margin-left: -10px
+  }
+  tr.el-table__row.hover-row .table-btn {
+    width: 52px;
+    height: 24px;
+    background-color: #1caec4;
+    padding: 0;
+    line-height: 20px;
+    border-color: #1caec4;
+    color: #FFF;
+    font-family: SourceHanSansCN-Regular;
+    font-size: 14px;
+    margin-left: -10px
+  }
+  //.table-btn-hover {
+  //  width: 52px;
+  //  height: 24px;
+  //  background-color: #1caec4;
+  //  padding: 0;
+  //  line-height: 24px;
+  //  border-color: #1caec4;
+  //  color: #FFF;
+  //  font-family: SourceHanSansCN-Regular;
+  //  font-size: 14px;
+  //}
+}

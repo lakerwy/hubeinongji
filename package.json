@@ -1,0 +1,43 @@
+{
+  "name": "agri-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@riophae/vue-treeselect": "^0.4.0",
+    "@smallwei/avue": "^2.8.20",
+    "@turf/turf": "^6.5.0",
+    "avue-plugin-ueditor": "^0.1.4",
+    "axios": "^0.21.1",
+    "core-js": "^3.6.5",
+    "crypto-js": "^4.1.1",
+    "echarts": "^5.1.2",
+    "element-ui": "^2.15.5",
+    "less": "^4.1.1",
+    "less-loader": "^6.0.0",
+    "ol": "^6.6.1",
+    "proj4": "^2.7.5",
+    "style-resources-loader": "^1.4.1",
+    "vue": "^2.6.11",
+    "vue-cli-plugin-style-resources-loader": "^0.1.5",
+    "vue-json-editor": "^1.4.3",
+    "vue-router": "^3.2.0",
+    "vue-seamless-scroll": "^1.1.23",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
