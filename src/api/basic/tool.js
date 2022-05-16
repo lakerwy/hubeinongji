@@ -21,7 +21,7 @@
  
  //分页查询机具信息
  export const queryToolPage = (params) => {
-   return service.get(`${baseUrl}/queryToolPage`, {params})
+   return service.post(`${baseUrl}/queryToolPage`, params)
  }
  
  //修改机具信息
@@ -29,6 +29,7 @@
    return service.post(`${baseUrl}/updateCdTool`, params, {isForm: true})
  }
  
- 
-
- 
+ //获取分组FullName
+ export const getGroupFullName = (params) =>{
+   return service.get(`${window.globalUrl.HOME_API}admin/group/getGroupFullNameById`,{params})
+ }

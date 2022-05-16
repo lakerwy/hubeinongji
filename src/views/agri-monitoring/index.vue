@@ -1,7 +1,7 @@
 <template>
-  <div class="monitoring-container" style="height:calc(100% - 91px);">
+  <div class="monitoring-container">
     <router-view></router-view>
-    <Footer class="map-footer" />
+<!--    <Footer class="map-footer" />-->
   </div>
 </template>
 
@@ -18,6 +18,6 @@ export default {
 <style lang="less" scoped>
 .monitoring-container {
   position: relative;
-  margin-top: 12px;
+  height:100%;
 }
 </style>

@@ -2,9 +2,9 @@
   <div>
     <div class="sub-view">
       <sidebar class="sidebar" />
-      <router-view class="sub-con"></router-view>
+      <!--<router-view class="sub-con"></router-view>-->
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 

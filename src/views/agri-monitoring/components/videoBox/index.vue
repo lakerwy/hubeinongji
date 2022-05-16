@@ -33,7 +33,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="video-con" @mouseover="isShowControls = true;" @mouseout="isShowControls = isPaused ? true : false;">
+      <div class="video-con" @mouseover="isShowControls = true" @mouseout="isShowControls = isPaused ? true : false">
         <video 
           ref="video" 
           width="100%" 

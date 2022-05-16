@@ -1,19 +1,18 @@
 <template>
-  <div style="position: relative;">
+  <div style="position: relative">
     <div
       v-if="type === '2'"
       class="verify-img-out"
-      :style="{height: (parseInt(setSize.imgHeight) + vSpace) + 'px'}"
+      :style="{ height: parseInt(setSize.imgHeight) + vSpace + 'px' }"
     >
       <div
         class="verify-img-panel"
-        :style="{width: setSize.imgWidth,
-                                                   height: setSize.imgHeight,}"
+        :style="{ width: setSize.imgWidth, height: setSize.imgHeight }"
       >
         <img
-          :src="'data:image/png;base64,'+backImgBase"
+          :src="'data:image/png;base64,' + backImgBase"
           alt
-          style="width:100%;height:100%;display:block"
+          style="width: 100%; height: 100%; display: block"
         />
         <div class="verify-refresh" @click="refresh" v-show="showRefresh">
           <i class="iconfont icon-refresh"></i>
@@ -22,44 +21,62 @@
           <span
             class="verify-tips"
             v-if="tipWords"
-            :class="passFlag ?'suc-bg':'err-bg'"
-          >{{tipWords}}</span>
+            :class="passFlag ? 'suc-bg' : 'err-bg'"
+            >{{ tipWords }}</span
+          >
         </transition>
       </div>
     </div>
     <!-- 公共部分 -->
     <div
       class="verify-bar-area"
-      :style="{width: setSize.imgWidth,
-                                              height: barSize.height,
-                                              'line-height':barSize.height}"
+      :style="{
+        width: setSize.imgWidth,
+        height: barSize.height,
+        'line-height': barSize.height,
+      }"
     >
       <span class="verify-msg" v-text="text"></span>
       <div
         class="verify-left-bar"
-        :style="{width: (leftBarWidth!==undefined)?leftBarWidth: barSize.height, height: barSize.height, 'border-color': leftBarBorderColor, transaction: transitionWidth}"
+        :style="{
+          width: leftBarWidth !== undefined ? leftBarWidth : barSize.height,
+          height: barSize.height,
+          'border-color': leftBarBorderColor,
+          transaction: transitionWidth,
+        }"
       >
         <span class="verify-msg" v-text="finishText"></span>
         <div
           class="verify-move-block"
           @touchstart="start"
           @mousedown="start"
-          :style="{width: barSize.height, height: barSize.height, 'background-color': moveBlockBackgroundColor, left: moveBlockLeft, transition: transitionLeft}"
+          :style="{
+            width: barSize.height,
+            height: barSize.height,
+            'background-color': moveBlockBackgroundColor,
+            left: moveBlockLeft,
+            transition: transitionLeft,
+          }"
         >
-          <i :class="['verify-icon iconfont', iconClass]" :style="{color: iconColor}"></i>
+          <i
+            :class="['verify-icon iconfont', iconClass]"
+            :style="{ color: iconColor }"
+          ></i>
           <div
             v-if="type === '2'"
             class="verify-sub-block"
-            :style="{'width':Math.floor(parseInt(setSize.imgWidth)*47/310)+ 'px',
-                                  'height': setSize.imgHeight,
-                                  'top':'-' + (parseInt(setSize.imgHeight) + vSpace) + 'px',
-                                  'background-size': setSize.imgWidth + ' ' + setSize.imgHeight,
-                                  }"
+            :style="{
+              width: Math.floor((parseInt(setSize.imgWidth) * 47) / 310) + 'px',
+              height: setSize.imgHeight,
+              top: '-' + (parseInt(setSize.imgHeight) + vSpace) + 'px',
+              'background-size': setSize.imgWidth + ' ' + setSize.imgHeight,
+            }"
           >
             <img
-              :src="'data:image/png;base64,'+blockBackImgBase"
+              :src="'data:image/png;base64,' + blockBackImgBase"
               alt
-              style="width:100%;height:100%;display:block"
+              style="width: 100%; height: 100%; display: block"
             />
           </div>
         </div>
@@ -295,6 +312,7 @@ export default {
         };
         reqCheck(data).then((response) => {
           let res = response.data;
+          //console.log("reqCheck",res)
           if (res.repCode == "0000") {
             this.moveBlockBackgroundColor = "#5cb85c";
             this.leftBarBorderColor = "#5cb85c";

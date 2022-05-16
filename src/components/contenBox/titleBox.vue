@@ -22,9 +22,9 @@ export default {
   .title {
     position: relative;
     width: 100%;
-    // height: 44px;
-    height: 30px;
-    // background: url("../../assets/images/titleBox.png") no-repeat;
+    box-sizing: border-box;
+    margin-top: 10px;
+    height: 40px;
     background: url("../../assets/images/title_bg.png") no-repeat;
     background-size: 100% 100%;
     span {

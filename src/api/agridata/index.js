@@ -4,7 +4,6 @@
 import service from '@/request/index.js'
 
 const baseUrl = window.globalUrl.HOME_API+'agri-web';
-const detaliUrl = window.globalUrl.DETAIL_API;
 
 /**
  * 农机一张图
@@ -21,12 +20,16 @@ export const searchMapPoint = (params) => {
 
 //农机详情
 export const getMachineDetail = (params) => {
-  return service.get(`${detaliUrl}/machineryMonitor/getDetailByMachinId`,{params})
+  return service.get(`${baseUrl}/machineryMonitor/getDetailByMachinId`,{params})
 }
 
-//生产资源详情 http://192.168.99.78:8890/cd/productResources/queryProductResourcesInfo?rowId=10000000055
+export const getMachineDetail_ = (params) => {
+  return service.get(`${baseUrl}/jobManagement/getByRowId`,{params})
+}
+
+//生产资源详情
 export const getProductDetail = (params) => {
-  return service.get(`${detaliUrl}/cd/productResources/queryProductResourcesInfo`,{params})
+  return service.get(`${baseUrl}/cd/productResources/queryProductResourcesInfo`,{params})
 }
 
 /**

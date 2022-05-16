@@ -15,7 +15,7 @@
       >
         <span>选择文件：</span>
         <el-button size="small" type="primary" class="shadow-btn">选择文件</el-button>
-        <span slot="tip"> 未选择任何文件</span>
+        <span slot="tip" > 未选择任何文件</span>
       </el-upload>
       <a class="upload" href="#" style="text-decoration:none;">下载模板</a>
     </div>

@@ -1,50 +1,51 @@
 <template>
-  <div class="avue-sidebar">
-    <el-scrollbar style="height:100%">
-      <div
-        v-if="validatenull(leftmenu)"
-        class="avue-sidebar--tip">没有发现菜单</div>
+  <div class="avue-sidebar" v-if="!validatenull(leftmenu)">
+    <el-scrollbar style="height: 100%">
       <el-menu
-        style="z-index: 5;"
+        style="z-index: 5"
         :default-active="nowTagValue"
         :show-timeout="200"
         :default-openeds="openeds"
         unique-opened
-        mode="vertical">
-        <sidebar-item
-          :menu="leftmenu"
-          :props="website.menu.props"
-          first/>
+        mode="vertical"
+      >
+        <sidebar-item @initPathChange="navTagChange" :menu="leftmenu" :props="website.menu.props" first />
       </el-menu>
     </el-scrollbar>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import sidebarItem from './sidebarItem'
-import { validatenull } from '@/util/validate'
+import { mapGetters } from "vuex";
+import sidebarItem from "./sidebarItem";
+import { validatenull } from "@/util/validate";
+
 export default {
-  name: 'Sidebar',
+  name: "Sidebar",
   components: { sidebarItem },
   created() {
-
+    this.openeds.push(sessionStorage.getItem("sideBarIndex") || "");
   },
   computed: {
-    ...mapGetters(['website', 'leftmenu']),
+    ...mapGetters(["website", "leftmenu"]),
   },
   data() {
     return {
-      nowTagValue: '',
-      openeds: ['/user']
-    }
+      nowTagValue: "",
+      openeds: ["/admin/user"],
+    };
   },
   methods: {
     validatenull(menu) {
-      return validatenull(menu)
+      return validatenull(menu);
+    },
+    navTagChange(val){
+      // debugger;
+      //console.log(val);
+      this.nowTagValue = val;
     }
-  }
-}
+  },
+};
 </script>
 
 <style lang="less">

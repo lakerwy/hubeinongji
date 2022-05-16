@@ -13,6 +13,15 @@ export default {
       fontSize: 0,
     },
     color: ['#00FCFF', '#FFDF1C', '#5AB72C', '#FF715A', '#2F9BFF'],
+    dataZoom: [
+      {
+        type: 'inside',
+        // disabled:true,
+        xAxisIndex: [0],
+        start: 90,
+        end: 100
+      },
+    ],
     xAxis: {
       nameTextStyle: {
         color: '#c0c3cd',
@@ -22,7 +31,8 @@ export default {
       axisLabel: {
         color: '#c0c3cd', //X轴文字
         fontSize: 14,
-        interval: 0,
+        interval: 2,
+        rotate:60,
       },
       axisTick: {
         lineStyle: {
@@ -42,7 +52,7 @@ export default {
         },
         show: true,
       },
-      data: ['09-01', '09-02', '09-03', '09-04', '09-05', '09-06', '09-07', '09-08','09-09','09-10','09-11','09-12',],
+      data: [],
       type: 'category',
     },
     yAxis: {
@@ -81,7 +91,7 @@ export default {
       },
     },
     series: [{
-        data: [38, 60, 40, 55, 42, 39, 80, 40,80, 40,85, 40],
+        data: [],
         type: 'bar',
         barMaxWidth: 'auto',
         barWidth: 16,
@@ -135,6 +145,14 @@ export default {
       fontSize: 0,
     },
     color: ['#00FCFF', '#FFDF1C', '#5AB72C', '#FF715A', '#2F9BFF'],
+    // dataZoom: [
+    //   {
+    //     type: 'inside',
+    //     xAxisIndex: [0],
+    //     start: 90,
+    //     end: 100
+    //   },
+    // ],
     xAxis: {
       nameTextStyle: {
         color: '#c0c3cd',
@@ -144,7 +162,8 @@ export default {
       axisLabel: {
         color: '#c0c3cd', //X轴文字
         fontSize: 14,
-        interval: 0,
+        // interval: 2,
+        // rotate:60,
       },
       axisTick: {
         lineStyle: {
@@ -164,7 +183,7 @@ export default {
         },
         show: true,
       },
-      data: ['09-01', '09-02', '09-03', '09-04', '09-05', '09-06', '09-07', '09-08','09-09','09-10','09-11','09-12',],
+      data: [],
       type: 'category',
     },
     yAxis: {
@@ -252,7 +271,7 @@ export default {
           show:true,
           // formatter:"{b}:{c}"
         },
-      data: [38, 60, 40, 55, 42, 39, 80, 40,80, 40,85, 40]
+      data: []
   }, ],
     // series: [{
     //     type: 'line',

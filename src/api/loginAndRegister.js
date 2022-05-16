@@ -32,7 +32,6 @@ export const getLoginSmsCode = (params) => {
 export const loginByUsername = (username, password, code, randomStr) => {
   let grant_type = 'password'
   let dataObj = qs.stringify({'username': username, 'password': password})
-
   return service({
     url: `${baseUrl}auth/oauth/token`,
     headers: {
@@ -41,7 +40,7 @@ export const loginByUsername = (username, password, code, randomStr) => {
       'Authorization': 'Basic cGlnOnBpZw=='
     },
     method: 'post',
-    params: {randomStr, code, grant_type},
+    params: {randomStr, code, grant_type,username},
     data: dataObj
   })
 }

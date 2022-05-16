@@ -1,17 +1,19 @@
 <template>
   <div class="left_tab_container">
     <div class="title">
-      <el-input v-model="searchValue" placeholder="搜索加油站、农资信息、维修站等" ></el-input>
+      <el-input v-model="searchValue" placeholder="搜索合作社、维修站等"></el-input>
       <div class="search_container">
-        <img src="@/assets/images/one-picture-search.png" alt="" @click="search({currentPage: 1, pageSize: 10})"/>
+        <img src="@/assets/images/one-picture-search.png" alt=""  @click="search({currentPage: 1, pageSize: 10})"/>
       </div>
     </div>
-    <div class="cont" v-if="showSearchValue">
-      <div class="list">
+    <div class="cont" v-if="showSearchValue" v-loading="loading">
+      <!--  -->
+      <div class="list">"
         <div v-for="(item,index) in information" class="item_container" :class="selectedIndex == index?'active':''"
              :key="index" @click="chooseItem(item,index)">
           <p>
-            {{index+1+page.currentPage*10-10}}. {{typeList[item.resoucesType].name}}&nbsp; &nbsp;{{item.ownerName}}-{{item.ownerPhone}}
+            {{index+1+page.currentPage*10-10}}. {{item.resourcesName}} {{item.ownerName?"-"+item.ownerName:""}} {{item.ownerPhone?"-"+item.ownerPhone:""}}
+            <!-- {{typeList[item.resoucesType].name}}&nbsp; &nbsp; -->
           </p>
           <p style="color: #a3bbce">{{ item.address }}</p>
         </div>
@@ -38,8 +40,8 @@ import {viewOnMapPopup} from "../../../../util/mapHanlder";
 
 export default {
   props: {
-    typeList:{
-      type: Object,
+    iconList:{
+      type: Array,
       default: ()=>({})
     },
     dataTypeList: {
@@ -54,7 +56,6 @@ export default {
   data() {
     return {
       information: [
-        // {id: 1, type: "拖拉机", name: "李永忠", tel: "15513701925", adresss: "武穴市绿丰农机专业合作社",},
       ],
       searchValue: '',
       selectedIndex: -1,
@@ -63,7 +64,8 @@ export default {
         pageTotal: 0,
         pageSize: 10,
         currentPage: 1,
-      }
+      },
+      loading:false,
     };
   },
   methods: {
@@ -79,18 +81,29 @@ export default {
     },
     //搜索
     async search(page){
+      this.loading = true
+      this.showSearchValue = true
+      let dataTypeList = []
+      this.iconList.forEach(item=>{
+        if(item.visible){
+          dataTypeList.push(item.searchkey)
+        }
+      })
       let params = {
         currentPage: page.currentPage,
-        dataTypeList: this.dataTypeList,
+        dataTypeList: dataTypeList,
         pageSize: page.pageSize,
         searchWord: this.searchValue
       }
       let res =  await searchMapPoint(params);
-      if(res.success){
-        this.page.pageTotal=res.data.total;
-        this.information = res.data.records;
+      if(res.data.success){
+        this.page.pageTotal=res.data.data.total;
+        this.information = res.data.data.records;
         this.showSearchValue = true;
+      }else{
+        this.showSearchValue = false
       }
+        this.loading = false
     },
     handleCurrentChange(val){
       this.page.currentPage = val;
@@ -105,8 +118,8 @@ export default {
   width: 410px;
   //height: 680px;
   position: absolute;
-  left: 30px;
-  top: 30px;
+  left: 80px;
+  top: 80px;
   background-color: rgba(18, 26, 46, 0.9);
   border: 1px solid #64bfff;
 
@@ -124,7 +137,16 @@ export default {
       color: #ffffff;
       width: 350px;
     }
-
+    //chrome
+    /deep/.el-input__inner::-webkit-input-placeholder {
+            color: rgba(128, 197, 255, .3);
+            font-size: 16px;
+    }
+    //firefox
+    /deep/.el-input__inner:-moz-placeholder {
+            color: rgba(128, 197, 255, .3);
+            font-size: 16px;
+    }
     .search_container {
       position: absolute;
       width: 50px;
@@ -182,28 +204,5 @@ export default {
       border: none;
     }
   }
-}
-/deep/ .el-input__placeholder {
-  color: #80c5ff;
-}
-/deep/input::-webkit-input-placeholder {
-  color: rgba(128, 197, 255, .3);
-}
-
-/deep/input::-moz-input-placeholder {
-  color: rgba(128, 197, 255, .3);
-}
-
-/deep/input::-ms-input-placeholder {
-  color: rgba(128, 197, 255, .3);
-}
-input::-webkit-input-placeholder {
-  color: rgba(128, 197, 255,.3);
-}
-input::-moz-input-placeholder {
-  color: rgba(128, 197, 255,.3);
-}
-input::-ms-input-placeholder {
-  color: rgba(128, 197, 255,.3);
 }
 </style>

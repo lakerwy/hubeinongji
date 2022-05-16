@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API;
 
 export function fetchList(query) {
   return request({
-    url: '/admin/token/page',
+    url: `${baseUrl}admin/token/page`,
     method: 'get',
     params: query
   })
@@ -27,7 +28,7 @@ export function fetchList(query) {
 
 export function delObj(token) {
   return request({
-    url: '/admin/token/' + token,
+    url: `${baseUrl}admin/token/` + token,
     method: 'delete'
   })
 }

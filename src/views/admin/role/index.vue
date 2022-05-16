@@ -24,7 +24,7 @@
                     <el-input v-model="searchForm.roleName" placeholder="请输入角色名称"></el-input>
                 </el-form-item>
                 <el-form-item class="btn">
-                    <el-button style="width: 90px;" class="shadow-btn" plain round size="medium" @click="searchChange">
+                    <el-button style="width: 90px;" class="shadow-btn" plain round size="medium" @click="searchChange" v-if="roleManager_btn_view">
                         查询
                     </el-button>
                     <el-button
@@ -38,7 +38,7 @@
                     </el-button>
                 </el-form-item>
             </el-form>
-            <avue-crud
+            <!-- <avue-crud
                     ref="crud"
                     class="my-table"
                     :option="tableOption"
@@ -52,7 +52,23 @@
                     @current-change="currentChange"
                     @row-update="update"
                     @row-save="create"
-                    @select="handleSelectionChange">
+                    @select="handleSelectionChange"> -->
+            <avue-crud
+                ref="crud"
+                class="my-table"
+                :page="page"
+                :option="tableOption"
+                :data="list"
+                v-model="form"
+                :table-loading="listLoading"
+                :before-open="handleOpenBefore"
+                @on-load="getList"
+                @refresh-change="refreshChange"
+                @size-change="sizeChange"
+                @current-change="currentChange"
+                @row-update="update"
+                @row-save="create"
+                @select="handleSelectionChange">
                 <template slot="empty">
                     <avue-empty
                             image="img/img-zwsj.png"
@@ -188,24 +204,30 @@
                 rolesOptions: undefined,
                 dialogPermissionVisible: false,
                 dialogVisible: false,
-                roleManager_btn_add: true,
-                roleManager_btn_edit: true,
-                roleManager_btn_del: true,
-                roleManager_btn_perm: true,
+                roleManager_btn_view: false,
+                roleManager_btn_add: false,
+                roleManager_btn_edit: false,
+                roleManager_btn_del: false,
+                roleManager_btn_perm: false,
                 dialogTitle: '新增角色',
                 selection: []
             }
         },
         created() {
-            // this.roleManager_btn_add = this.permissions['sys_role_add']
-            // this.roleManager_btn_edit = this.permissions['sys_role_edit']
-            // this.roleManager_btn_del = this.permissions['sys_role_del']
-            // this.roleManager_btn_perm = this.permissions['sys_role_perm']
+            this.getBtnPermis()  //按钮权限
         },
         computed: {
             ...mapGetters(['elements', 'permissions'])
         },
         methods: {
+            getBtnPermis(){
+              this.roleManager_btn_view = this.permissions[window.global.buttonPremission.roleView]
+              this.roleManager_btn_add = this.permissions[window.global.buttonPremission.roleAdd]
+              this.roleManager_btn_edit = this.permissions[window.global.buttonPremission.roleEdit]
+              this.roleManager_btn_del = this.permissions[window.global.buttonPremission.roleDelete]
+              this.roleManager_btn_perm = this.permissions[window.global.buttonPremission.rolePerm]
+              //console.log('this.permissions',this.permissions)
+            },
             getList() {
                 this.listLoading = true
                 fetchList(Object.assign({
@@ -294,7 +316,7 @@
             // 删除
             handleDelete(row, index) {
 
-                this.$confirm('是否确认删除选中的数据?', '警告', {
+                this.$confirm('是否确认删除选中的数据?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -395,6 +417,9 @@
         }
     }
     /deep/ .avue-crud__menu {
+        display: none;
+    }
+    /deep/ .avue-crud__pagination{
         display: none;
     }
 

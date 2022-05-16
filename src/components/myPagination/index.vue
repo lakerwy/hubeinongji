@@ -1,25 +1,28 @@
 <template>
-  <div class="pagination">   
-      <!-- :hide-on-single-page="true" -->
+  <div class="pagination">
+    <!-- :hide-on-single-page="true" -->
     <el-pagination
+      :background="true"
       :current-page.sync="currentPage"
-      :page-size="pageSize"
+      :page-size.sync="pageSize"
       :page-sizes="pageSizes"
-      layout="sizes, prev, slot, next, total"
+      :pager-count="pagerCount"
+      :layout="Layout"
       :total="total"
+      @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
-      @prev-click="handleCurrentChange"
-      @next-click="handleCurrentChange">
+    >
       <template>
         <div class="pager">
           <el-input-number
-            style="width:40px;height:26px;background:transparent;" 
+            style="width: 40px; height: 26px; background: transparent"
             :controls="false"
             :min="1"
-            v-model="currentPage" 
+            v-model="currentPage"
             @blur="handleCurrentChange(currentPage)"
-            @keyup.enter="handleCurrentChange(currentPage)"></el-input-number>
-          </div>
+            @keyup.enter.native="handleCurrentChange(currentPage)"
+          ></el-input-number>
+        </div>
       </template>
     </el-pagination>
   </div>
@@ -30,56 +33,91 @@ export default {
   props: {
     currentPage: {
       type: Number,
-      default: 1
+      default: 1,
     },
     pageSize: {
       type: Number,
-      default: 10
+      default: 1,
     },
     pageSizes: {
       type: Array,
-      default: () => [10,20,50,100,200]
+      default: () => [10, 20, 50, 100, 200],
     },
     total: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
+    pagerCount: {
+      type: Number,
+      default: 5,
+    },
+    Layout: {
+      type: String,
+      default: "sizes, prev, pager, next, jumper, ->, total",
+    },
   },
   data() {
     return {
-      current: 1
-    }
+      page_current: this.currentPage,
+      page_size: this.pageSize,
+      page_sizes: this.pageSizes,
+      page_total: this.total,
+      pager_count:this.pagerCount,
+      page_layout:this.Layout
+    };
+  },
+  watch: {
+    currentPage(){
+      this.page_current =  this.currentPage
+    },
+    pageSize(){
+      this.page_size =  this.pageSize
+    },
+    pageSizes(){
+      this.page_sizes =  this.pageSizes
+    },
+    total(){
+      this.page_total =  this.total
+    },
+    Layout(){
+      this.page_layout =  this.Layout
+    },
+    pagerCount(){
+      this.pager_count =  this.pagerCount
+    },
+
   },
   methods: {
     handleCurrentChange(val) {
-      this.$emit('current-change', val)
+      this.$emit("current-change", val);
     },
     handleSizeChange(val) {
-      this.$emit('size-change', val)
-    }
-  }
-}
+      this.$emit("size-change", val);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .pagination {
-  /deep/ .el-pagination .btn-next, /deep/ .el-pagination .btn-prev {
-    // background: @base-darkBlue;
+  font-size: 15px;
+
+  /deep/ .el-pagination .btn-next,
+  /deep/ .el-pagination .btn-prev {
     background: transparent;
     padding-right: 0;
     padding-left: 0;
   }
-  /deep/ .el-pagination button{
+  /deep/ .el-pagination button {
     width: 30px;
     height: 26px;
     min-width: 30px;
     border: solid 1px #356e97;
   }
-  /deep/ .el-pagination button:disabled{
-    // background: @base-darkBlue;
+  /deep/ .el-pagination button:disabled {
     background: transparent;
     color: #303133;
-    border: solid 1px rgba(53, 110, 151,.4);
+    border: solid 1px rgba(53, 110, 151, 0.4);
   }
   /deep/ .el-input__inner {
     background: transparent;
@@ -95,8 +133,10 @@ export default {
   }
   /deep/ .el-pagination__total {
     color: @base-fontColor;
-    margin-right: 0;
+    // margin-right: 12px;
+    margin-right: 40px;
     margin-left: 12px;
+    font-size: 15px;
   }
   /deep/ .el-pagination {
     padding: 2px 0;
@@ -124,20 +164,34 @@ export default {
     height: 26px;
     min-height: 26px;
   }
-  /deep/ .el-pagination .btn-next, /deep/ .el-pagination .btn-prev {
-    color: #C0C4CC;
+  /deep/ .el-pagination .btn-next,
+  /deep/ .el-pagination .btn-prev {
+    color: #c0c4cc;
   }
+
+  // pbw修改按钮样式
+  /deep/ .el-pager li {
+    background-color: rgba(0, 0, 0, 0);
+    color: #c0c4cc;
+  }
+  /deep/ .el-pager li:not(.disabled).active {
+    background-color: #0a9091;
+    color: #fff;
+  }
+  /deep/ .el-pagination__jump {
+    color: #c0c4cc;
+  }
+
   .pager {
     color: @base-fontColor;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0 6px;
     display: inline-block;
-     /deep/ .el-input__inner {
+    /deep/ .el-input__inner {
       height: 26px;
       padding: 0;
     }
   }
-
 }
 </style>

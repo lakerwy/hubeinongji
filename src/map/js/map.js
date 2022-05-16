@@ -119,6 +119,11 @@ class DxMap extends Map {
         resizeObserver.observe(element);
       }
     }
+
+    // 屏蔽浏览器默认右键
+    document.oncontextmenu = function(e) {
+      return false;
+    };
   }
 
   //#region  图层
@@ -537,21 +542,20 @@ export function exportMapBase64({
   callback
 }) {
   map.once("rendercomplete", () => {
-    owidth = owidth || width;
-    oheight = oheight || height;
-    var mapCanvas = document.createElement("canvas");
-    mapCanvas.width = owidth;
-    mapCanvas.height = oheight;
-    var mapContext = mapCanvas.getContext("2d");
+    const mapCanvas = document.createElement("canvas");
+    const size = map.getSize();
+    mapCanvas.width = size[0];
+    mapCanvas.height = size[1];
+    const mapContext = mapCanvas.getContext("2d");
     Array.prototype.forEach.call(
       document.querySelectorAll(".ol-layer canvas"),
       function(canvas) {
         if (canvas.width > 0) {
-          var opacity = canvas.parentNode.style.opacity;
+          const opacity = canvas.parentNode.style.opacity;
           mapContext.globalAlpha = opacity === "" ? 1 : Number(opacity);
-          var transform = canvas.style.transform;
+          const transform = canvas.style.transform;
           // Get the transform parameters from the style's transform matrix
-          var matrix = transform
+          const matrix = transform
             .match(/^matrix\(([^\(]*)\)$/)[1]
             .split(",")
             .map(Number);
@@ -560,17 +564,7 @@ export function exportMapBase64({
             mapContext,
             matrix
           );
-          mapContext.drawImage(
-            canvas,
-            left,
-            top,
-            width,
-            height,
-            0,
-            0,
-            owidth,
-            oheight
-          );
+          mapContext.drawImage(canvas, 0, 0);
         }
       }
     );

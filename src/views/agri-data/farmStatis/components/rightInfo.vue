@@ -51,10 +51,11 @@ export default {
   },
   data() {
     return {
-      currentIndex: 0,
+      currentIndex: 1,
     }
   },
   mounted() {
+    // //console.log(this.currentIndex);
     this.initChart();
     // initEcharts('areaStatis', optionChart.areaOption);
     // initEcharts('installTrend', optionChart.installOption);
@@ -72,9 +73,12 @@ export default {
   },
   methods: {
     initChart() {
-      this.getAreaMachine();
+      // this.getAreaMachine();
       this.getInstallTrend();
       this.getBrand();
+      // this.setMachiner();
+      // this.getAreaCooperative();
+      this.setCooper();
     },
     //切换农机合作社
     setMachiner() {
@@ -85,29 +89,32 @@ export default {
       this.currentIndex = 1;
       this.getAreaCooperative();
     },
+    getMachineNum(data){
+      this.$set(optionChart.areaOption.series[0], 'name', "农机数量(辆)");
+      this.$set(optionChart.areaOption.xAxis, 'data', data.groupNames);
+      this.$set(optionChart.areaOption.series[0], 'data', data.datas);
+      //initEcharts('areaStatis', optionChart.areaOption);
+    },
     //区域农机，合作社统计
     async getAreaMachine() {
       let res = await getAreaMachine(Object.assign({},this.cityAdress));
-      if (res.success) {
+      let {code, data, msg} = res;
+      if (!code) {
         this.$set(optionChart.areaOption.series[0], 'name', "农机数量(辆)");
-        this.$set(optionChart.areaOption.xAxis, 'data', res.groupNames);
-        this.$set(optionChart.areaOption.series[0], 'data', res.datas);
+        this.$set(optionChart.areaOption.xAxis, 'data', data.groupNames);
+        this.$set(optionChart.areaOption.series[0], 'data', data.datas);
 
         initEcharts('areaStatis', optionChart.areaOption);
-
-        let obj={};
-        res.groupNames.forEach((item,index)=>{
-          obj[item] = res.datas[index];
-        })
-        return obj
       }
     },
     async getAreaCooperative() {
       let res = await getAreaCooperative(Object.assign({},this.cityAdress));
-      if (res.success) {
+      let {code, data, msg} = res;
+      if (!code) {
         this.$set(optionChart.areaOption.series[0], 'name', "合作社数量");
-        this.$set(optionChart.areaOption.xAxis, 'data', res.groupNames);
-        this.$set(optionChart.areaOption.series[0], 'data', res.datas);
+        this.$set(optionChart.areaOption.xAxis, 'data', data.groupNames);
+        this.$set(optionChart.areaOption.series[0], 'data', data.datas);
+        this.$emit("setCooperData",data.totalCooperativeCount)
 
         initEcharts('areaStatis', optionChart.areaOption);
       }
@@ -115,9 +122,10 @@ export default {
     //安装趋势
     async getInstallTrend() {
       let res = await getInstallTrend(Object.assign({},this.cityAdress));
-      if (res.success) {
+      let {code, data, msg} = res;
+      if (!code) {
         let name = [], value = [];
-        res.data.forEach(item => {
+        data.data.forEach(item => {
           name.push(item.key);
           value.push(item.data)
         })
@@ -126,13 +134,23 @@ export default {
 
         initEcharts('installTrend', optionChart.installOption);
       }
+      if(data.msg){
+        let len = optionChart.installOption.xAxis[0].data.length;
+        let value = [];
+        for(let i = 0;i<len;i++){
+          value.push(0);
+        }
+        this.$set(optionChart.installOption.series[0], 'data', value);
+        initEcharts('installTrend', optionChart.installOption);
+      }
     },
     ////终端品牌统计
     async getBrand() {
       let res = await getTerminalBrand(Object.assign({},this.cityAdress));
-      if (res.success) {
+      let {code, data, msg} = res;
+      if (!code) {
         let yAxis1 = [], yAxis2 = [], series1 = [], series2 = [];
-        let temp = res.data.map(item => {
+        let temp = data.data.map(item => {
           return {
             name: item.key,
             value: item.data,
@@ -142,6 +160,17 @@ export default {
         series2 = temp.slice(4);
         yAxis1 = series1.map(item=>item.name);
         yAxis2 = series2.map(item=>item.name);
+
+        //console.log(series2);
+        if(document.body.scrollWidth < 1920){
+          if(series2.length == 0){
+            document.querySelector(".terminal").style.setProperty("min-width","0");
+            initEcharts("terminal", optionChart.terminalOption,true);
+          }else{
+            document.querySelector(".terminal").style.setProperty("min-width","460px");
+            initEcharts("terminal", optionChart.terminalOption,true);
+          }
+        }
 
         this.$set(optionChart.terminalOption.xAxis[1], 'max', series1[0].value);
         this.$set(optionChart.terminalOption.yAxis[0], 'data', yAxis1);
@@ -161,34 +190,56 @@ export default {
 <style lang="less" scoped>
 @vw: 19.2vw;
 @vh: 10.8vh;
+@Font-size:14 / @vw;
 .rightInfo {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+
+  .box1{
+    margin-top: 20px;
+    box-sizing: border-box;
+  }
+
+  .box2,.box3{
+    margin-top: 2%;
+    box-sizing: border-box;
+  }
+
   .box1 {
-    height: 280 / @vh;
+    section{
+      height: 100%;
+    }
+
+    height: 33%;
     position: relative;
     border: 1px solid #07335d;
 
     .areaStatis {
       position: absolute;
-      top: 20 / @vh;
-      width: 477px;
-      height: 260 / @vh;
+      top: 22px;
+      width: 100%;
+      height: calc(99% - 22px);
     }
 
     .changeBtn {
       position: absolute;
-      top: 22 / @vh;
-      left: 200px;
+      top: 22px;
+      left: 45%;
       display: flex;
 
       > div {
+        // font-size: @Font-size;
+        font-size: 13px;
         cursor: pointer;
-        width: 61px;
-        height: 28 / @vh;
         margin-right: 12px;
         border: 1px solid #055A9B;
         text-align: center;
-        line-height: 28 / @vh;
-        color: #67c8ff  ;
+        padding: 5px;
+        color: #67c8ff;
         box-shadow: 0px 1px 8px #03548D inset;
       }
 
@@ -201,30 +252,39 @@ export default {
   }
 
   .box2 {
-    margin-top: 10 / @vh;
-    height: 280 / @vh;
-    border: 1px solid #07335d;
+    section{
+      height: 100%;
+    }
+
+    height: 28%;
     position: relative;
+    border: 1px solid #07335d;
 
     .installTrend {
       position: absolute;
-      top: 20 / @vh;
-      width: 477px;
-      height: 260 / @vh;
+      top: 22px;
+      width: 100%;
+      // height: 99%;
+      height: calc(99% - 22px);
     }
   }
 
   .box3 {
-    margin-top: 10 / @vh;
-    height: 300 / @vh;
-    border: 1px solid #07335d;
+    section{
+      height: calc(100% - 22px);
+      width: 100%;
+      overflow: scroll;
+      position: absolute;
+      top: 22px;
+    }
+
+    height: 32%;
     position: relative;
+    border: 1px solid #07335d;
 
     .terminal {
-      position: absolute;
-      top: 20 / @vh;
-      width: 477px;
-      height: 260 / @vh;
+      width: 100%;
+      height: 95%;
     }
   }
 }

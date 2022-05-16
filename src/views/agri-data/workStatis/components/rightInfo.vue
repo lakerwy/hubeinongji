@@ -16,18 +16,6 @@
         <div id="history" class="history"></div>
       </section>
     </ContentBox>
-<!--    <ContentBox2-->
-<!--      class="box2"-->
-<!--      :headName="'区域作业统计'"-->
-<!--      :headName2="'历史作业统计'"-->
-<!--      :currentIndex='currentIndex'-->
-<!--      @chooseIndex="chooseIndex"-->
-<!--    >-->
-<!--      <section>-->
-<!--        <div id="areaWork" class="history areaWork" v-show="currentIndex==0"></div>-->
-<!--        <div  id="history" class="history" v-show="currentIndex==1"></div>-->
-<!--      </section>-->
-<!--    </ContentBox2>-->
   </div>
 </template>
 
@@ -37,7 +25,7 @@ import ContentBox2 from "../../../../components/contenBox/historyIndex";
 import {initEcharts} from "../../../../util/chart"
 import rightChart from "./rightChart"
 import {getAreaWork, getStatJobArea, getStatSubsoilingArea} from "../../../../api/agridata";
-import {valueTofixed} from "../../../../util/util";
+import {dateFormat, valueTofixed} from "../../../../util/util";
 import { mapState, mapMutations } from "vuex";
 
 export default {
@@ -48,6 +36,7 @@ export default {
   data(){
     return{
       currentIndex: 0,
+
     }
   },
   mounted(){
@@ -71,26 +60,56 @@ export default {
     initChart(){
       // this.getStatSubsoilingArea()
       this.getStatJobArea();
-      this.getAreaWork();
+      // this.getAreaWork();
+    },
+    getWorkNum(res){
+      //console.log(res);
+      // if(document.body.scrollWidth < 1920){
+      //   if(res.barYAxisData.length != 0){
+      //     document.querySelector(".deepLoosen").style.setProperty("min-width","500px");
+      //   }else{
+      //     document.querySelector(".deepLoosen").style.setProperty("min-width","0");
+      //   }
+      // }
+
+      if (res.result == "success") {
+        this.$set(rightChart.areaWorkOption.yAxis[0], 'data', res.barYAxis);
+        this.$set(rightChart.areaWorkOption.yAxis[1], 'data', res.barYAxisData);
+        this.$set(rightChart.areaWorkOption.series[0], 'data', res.barYAxisData);
+
+        initEcharts('areaWork', rightChart.areaWorkOption,true);
+      }
     },
     //区域作业统计
     async getAreaWork(){
+      let year = new Date().getFullYear();
+      //去当年的区域统计
+      /*let startTime = dateFormat(new Date(new Date().setFullYear(year)),"yyyy-MM-dd hh:mm:ss");
+      let endTime = dateFormat(new Date(),"yyyy-MM-dd hh:mm:ss");*/
+      let startTime = new Date();
+      startTime.setDate(1);
+      startTime.setMonth(0);
+      startTime.setHours(0,0,0,0);
+      startTime = dateFormat(startTime,"yyyy-MM-dd hh:mm:ss");
+
+      let endTime = new Date();
+      endTime.setFullYear(endTime.getFullYear()+2);
+      endTime.setDate(0);
+      endTime.setMonth(-1);
+      endTime.setHours(23,59,59,0);
+      endTime = dateFormat(endTime,"yyyy-MM-dd hh:mm:ss");
       let res = await getAreaWork(Object.assign({
-        startTime: "2021-01-01",
-        endTime: "2021-10-01",
-        jobType: "4",
+        startTime: startTime,
+        endTime: endTime,
+        jobType: "4", //不是深松，是全部
       },this.cityAdress))
+
       if(res.result == "success"){
         this.$set(rightChart.areaWorkOption.yAxis[0], 'data', res.barYAxis);
+        this.$set(rightChart.areaWorkOption.yAxis[1], 'data', res.barYAxisData);
         this.$set(rightChart.areaWorkOption.series[0], 'data', res.barYAxisData);
 
         initEcharts('areaWork', rightChart.areaWorkOption);
-
-        let obj = {};
-        res.mapData.forEach(item=>{
-          obj[item.name] = item.value
-        })
-        return obj;
       }
     },
     //深松统计
@@ -99,9 +118,10 @@ export default {
         jobType: "",
         yearNum: 5
       },this.cityAdress));
-      if(res.success){
+      let {code, data, msg} = res;
+      if(!code){
         let name = [], value = [];
-        res.data.forEach(item => {
+        data.data.forEach(item => {
           name.push(item.year);
           value.push(valueTofixed(item.data))
         })
@@ -119,9 +139,10 @@ export default {
         jobType: "",
         yearNum: 5
       },this.cityAdress))
-      if(res.success){
+      let {code, data, msg} = res;
+      if(!code){
         let year=[],allData=[],successData=[];
-        res.data.forEach(item => {
+        data.data.forEach(item => {
           year.push(item.year);
           allData.push(valueTofixed(item.allData));
           successData.push({
@@ -150,34 +171,50 @@ export default {
 @vw: 19.2vw;
 @vh: 10.8vh;
 .rightInfo {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+
   .box1 {
-    //height: 354 / @vh;
-    height: 526 / @vh;
+    margin-top: 20px;
+    section{
+      height: calc(100% - 22px);
+      width: 100%;
+      overflow: scroll;
+      position: absolute;
+      top: 22px;
+    }
+
+    height: 54%;
+    box-sizing: border-box;
     position: relative;
     border: 1px solid #07335d;
 
     .deepLoosen {
-      height: 500 / @vh;
-      //height: 330 / @vh;
-      position: absolute;
-      top: 20 / @vh;
-      width: 477px;
+      height: 95%;
+      width: 100%;
     }
   }
 
   .box2 {
-    margin-top: 10 / @vh;
-    //height: 526 / @vh;
-    height: 354 / @vh;
+    margin-top: 2%;
+    section{
+      height: 100%;
+    }
+
+    height: 40%;
+    box-sizing: border-box;
     border: 1px solid #07335d;
     position: relative;
 
     .history {
-      //height: 500 / @vh;
       position: absolute;
-      top: 20 / @vh;
-      height: 330 / @vh;
-      width: 477px;
+      top: 22px;
+      height: 95%;
+      width: 98%;
     }
   }
 

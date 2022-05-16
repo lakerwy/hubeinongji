@@ -2,7 +2,7 @@ const config = window.global;
 
 const view = config ? config.view : null;
 const layers = config ? config.layers : null;
-
+config
 // 视图配置
 export const CONFIG_VIEW = {
   ...view,

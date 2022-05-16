@@ -4,51 +4,64 @@
     <titleBox :headName="'合作社农机作业报表'" />
     <basic-container class="basic-con">
       <div class="searchline">
-      <el-form class="my-form" label-position="right" label-width="85px" :model="form">
-        <div class="formItem">
-          <el-form-item label="农机分组: ">
-            <el-select v-model="model" placeholder="请选择农机分组">
-              <el-option>全部</el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="机手姓名:">
-            <el-input v-model="model" placeholder="请输入机手姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="车牌号码:">
-            <el-input v-model="model" placeholder="请输入车牌号码"></el-input>
-          </el-form-item>
-          <el-form-item class="item-data" label="起止时间: ">
-            <el-date-picker
-              class="datepicker"
-              v-model="form.queryStartTime"
-              type="date"
-              :clearable="false"
-              prefix-icon="el-icon-date"
-              placeholder="开始时间"
-            ></el-date-picker>
-            <span style="diaplay:inline-block;width:12px; color: #448dd5"> — </span>
-            <el-date-picker
-              class="datepicker"
-              v-model="form.queryEndTime"
-              type="date"
-              :clearable="false"
-              prefix-icon="el-icon-date"
-              placeholder="结束时间"
-            ></el-date-picker>
-          </el-form-item>
-                  <el-button type="primary" class="shadow-btn" plain round
-            >查询</el-button>               
-        </div>   
-
+        <el-form
+          class="my-form"
+          label-position="right"
+          label-width="85px"
+          :model="form"
+        >
+          <div class="formItem">
+            <el-form-item label="农机分组: ">
+              <el-input
+                v-model="groupData.name"
+                placeholder="请选择农机分组"
+                @focus="open"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="机手姓名:">
+              <el-input v-model="form.driverName" placeholder="请输入机手姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="车牌号码:">
+              <el-input v-model="form.plateNumber" placeholder="请输入车牌号码"></el-input>
+            </el-form-item>
+            <el-form-item class="item-data" label="起止时间: ">
+              <el-date-picker
+                class="datepicker"
+                v-model="form.bTimeEx"
+                type="date"
+                :clearable="false"
+                prefix-icon="el-icon-date"
+                placeholder="开始时间"
+                :picker-options="startTime"
+              ></el-date-picker>
+              <span style="diaplay: inline-block; width: 12px; color: #448dd5">
+                —
+              </span>
+              <el-date-picker
+                class="datepicker"
+                v-model="form.eTimeEx"
+                type="date"
+                :clearable="false"
+                prefix-icon="el-icon-date"
+                placeholder="结束时间"
+                :picker-options="endTime"
+              ></el-date-picker>
+            </el-form-item>
+            <el-button type="primary" class="shadow-btn" plain round @click="handleClick('search')" v-if="btnPermis.btnView">
+              查询
+            </el-button>
+          </div>
         </el-form>
       </div>
       <div class="my-table">
-                   <div class="tableTool" @click="handleClick('export')">
-            <img src="img/table_tool3.png" alt="" />
-            <span>报表导出</span>
-          </div>
+        <div class="tableTool" @click="handleClick('export')" v-if="btnPermis.btnExport">
+          <img src="img/table_tool3.png" alt="" />
+          <span>报表导出</span>
+        </div>
         <el-table
-          :data="tableData"
+          :data="tableData"      
+          v-loading="loading"
+          element-loading-background="rgba(0, 0, 0, 0.1)"
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectChange"
@@ -60,7 +73,7 @@
             fixed="left"
           >
           </el-table-column>
-          <el-table-column type="index" label="序号" width="120" fixed="left">
+          <el-table-column type="index" label="序号" width="120" fixed="left" :index="indexMethod">
           </el-table-column>
           <el-table-column
             v-for="item in columns"
@@ -74,11 +87,12 @@
       </div>
     </basic-container>
     <myPagination
-      style="margin-top: 32px"
+      style="margin-top: 22px"
       :currentPage="page.currentPage"
       :pageSize="page.pageSize"
       :total="page.total"
       @current-change="currentChange"
+      @size-change="handleSizeChange"
     />
   </div>
 </template>
@@ -86,10 +100,14 @@
 <script>
 import titleBox from "_com/contenBox/titleBox.vue";
 import myPagination from "_com/myPagination/index";
+import {
+  queryCooperationMachineJobDetail,
+  exportCooperationMachineJobDetail,
+} from "_api/report/work";
+import { mapGetters, mapMutations } from "vuex";
+import { dateFormat, handBlobDown } from "../../../../util/util";
 
 export default {
-  name: "department",
-
   components: {
     titleBox,
     myPagination,
@@ -100,68 +118,174 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 100,
+        total: 0,
       },
       columns: [
-        { prop: "sesonName", label: "机手姓名"},
-        { prop: "groupName", label: "车牌号码"},
-        { prop: "type", label: "作业乡镇"},
-        { prop: "type", label: "作业面积(亩)" },
-        { prop: "startTime", label: "合格面积(亩)" },
+        { prop: "driverName", label: "机手姓名" },
+        { prop: "plateNumber", label: "车牌号码" },
+        { prop: "town", label: "作业乡镇" },
+        { prop: "computeArea", label: "作业面积(亩)" },
+        { prop: "checkedPassArea", label: "合格面积(亩)" },
       ],
-      tableData: [
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-      ],
+      tableData: [],
       selection: [], // 选择的数据
-      dialogVisible: false,
-      dialogTitle: "新增分组",
-      form: {},
-      model: "",
-      showMaps: false,
-      editTitle: "",
-      echartType:true,
-
+      form: {
+        bTimeEx: new Date(
+          new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)
+        ),
+        eTimeEx: new Date(
+          new Date(new Date().setMonth(11, 31)).setHours(23, 59, 59, 999)
+        ),
+      },
+      startTime:{
+        disabledDate: time => {
+          let endDateVal = this.form.eTimeEx;
+          if(endDateVal) {
+            //小于结束时间
+            return time > new Date(endDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      endTime:{
+        disabledDate: time => {
+          let startDateVal = this.form.bTimeEx;
+          if(startDateVal) {
+            return time < new Date(startDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      btnPermis: {  //按钮权限
+        btnView: true,
+        btnExport: true,
+      },
+      loading:false
     };
   },
+  computed: {
+    ...mapGetters(["groupData","permissions",'globalSetting']),
+  },
+  watch:{
+    'globalSetting.bTime':{
+        handler(newVal,oldVal){
+        this.form.bTimeEx = newVal?newVal:this.form.bTimeEx
+      },
+        immediate: true
+    },
+    'globalSetting.eTime':
+    { handler(newVal,oldVal){
+      this.form.eTimeEx = newVal?newVal:this.form.eTimeEx
+    },
+        immediate: true
+    }
+  },
+  created() {
+    this.setGroupCheckBox(true);
+    this.setGroupBoxType(1)
+    this.getBtnPermis();
+  },
   methods: {
-    initData() {},
-    // 查询
+    ...mapMutations({
+      setGroupBoxStatus: "setGroupBoxStatus",
+      setGroupCheckBox: "setGroupCheckBox",
+      setGroupBoxType: 'setGroupBoxType',
+    }),
+        // 打开农机分组框
+    open() {
+    this.setGroupBoxStatus(true);
+      // this.setGroupCheckBox(true);
+    },
+    getBtnPermis() {
+      this.btnPermis.btnView = this.permissions[window.global.buttonPremission.cooperatAgriReportView];
+      this.btnPermis.btnExport = this.permissions[window.global.buttonPremission.cooperatAgriReportExport];
+      //console.log('this.btnPermis',this.btnPermis)
+      //console.log('this.permissions',this.permissions)
+    },
+    //查询数据
+    async initData() {
+      this.loading = true
+      let res = await queryCooperationMachineJobDetail({
+        page: this.page.currentPage,
+        rows: this.page.pageSize,
+        groupId: this.groupData.children.toString(),
+        bTimeEx: dateFormat(this.form.bTimeEx),
+        // eTimeEx: dateFormat(this.form.eTimeEx),
+        eTimeEx: dateFormat(new Date(new Date(this.form.eTimeEx).setHours(23, 59, 59, 999))),
+        jobType:this.globalSetting.jobType,
+        driverName:this.form.driverName,
+        plateNumber:this.form.plateNumber
+      });
+      this.loading = false
+      if(!res.code){
+        this.tableData = res.data.rows;
+        this.page.total = res.data.total;
+      }
+    },
     searchChange() {},
     // 选择事件
     handleSelectChange(selection) {
       this.selection = selection;
     },
-    currentChange() {},
+        //报表导出
+    async exportExcel(){
+      this.loading = true
+      let res = await exportCooperationMachineJobDetail({
+        page:this.page.currentPage,
+        rows:this.page.pageSize,
+        groupId: this.groupData.children.toString() ,
+        bTimeEx: dateFormat(this.form.bTimeEx),
+        // eTimeEx: dateFormat(this.form.eTimeEx),
+        eTimeEx: dateFormat(new Date(new Date(this.form.eTimeEx).setHours(23, 59, 59, 999))),
+        jobType:this.globalSetting.jobType,
+        plateNumber:this.form.plateNumber,
+        driverName:this.form.driverName,
+      })
+      if(res.data.success) {
+        // let obj = encodeURI(res.data.obj)
+        // let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel?filePath='+obj;
+        // downloadPost(url)
+        let obj = res.data.obj;
+        let title = '合作社农机报表.xls';
+        let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel';
+        handBlobDown(url,obj,title)
+      } else {
+        this.$message.error(res.data.msg || '导出失败')
+      }
+      this.loading = false
+    } ,
+    currentChange(val) {
+      this.page.currentPage = val;
+      this.initData();
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val;
+      this.initData();
+    },
+    check() {
+      if (this.groupData.children.length > 0) {
+        return true;
+      } else {
+        this.$message("请选择农机分组");
+      }
+      return false;
+    },
+    handleClick(param){
+      if(this.check()){
+        if(param === 'search'){
+          this.page.currentPage = 1;
+          this.initData()
+        }else if(param === 'export'){
+          this.exportExcel()
+        }
+      }
+    },
+    //处理序号问题
+    indexMethod(index) {
+      return (this.page.currentPage - 1) * this.page.pageSize + index + 1;
+    },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
@@ -169,53 +293,58 @@ export default {
 .opreationSeason {
   .basic-con {
     .my-form {
-     .formItem {
-      width: 100%;
-      display: flex;  
-      .el-form-item {
-        margin-right: 15px;
-        margin-bottom: 10px;
-        width: 360px;
-        /deep/ .el-form-item__label {
-          padding: 0;
+      .formItem {
+        width: 100%;
+        display: flex;
+        .el-form-item {
+          margin-right: 15px;
+          margin-bottom: 10px;
+          // width: 360px;
+          // /deep/ .el-form-item__label {
+          //   padding: 0;
+          // }
+          .el-input{
+            width: 130px;
+          }
+          .el-select {
+            // width: 215px;
+          }
         }
-        .el-input, .el-select {
-          width: 215px;
+        .item-data {
+          // width: 800px;
+          width: 35%;
+          .datepicker{
+            width: 45% !important;
+          }
         }
-      }
-      .item-data {
-        width: 800px;
       }
     }
-  }
 
     .my-table {
       margin-top: 20px;
-      height: calc(100% - 81px);
+      height: calc(100% - 120px);
 
       /deep/ .el-table {
         height: calc(100% - 54px);
       }
-     .tableTool {
-      display: flex;
-      align-items: center;
-      color: #aac2d6;
-      font-size: 14px;
-      cursor: pointer;
-      float: right;
-      margin-bottom: 10px;
-      img {
-        margin-right: 5px;
+      .tableTool {
+        display: flex;
+        align-items: center;
+        color: #aac2d6;
+        font-size: 14px;
+        cursor: pointer;
+        float: right;
+        margin-bottom: 10px;
+        img {
+          margin-right: 5px;
+        }
       }
-    }
     }
   }
   .searchline {
-      padding-bottom: 18px;
-      border-bottom: 1px solid #133460;
-      margin-bottom: 5px;
-
+    padding-bottom: 18px;
+    border-bottom: 1px solid #133460;
+    margin-bottom: 5px;
   }
-
 }
 </style>

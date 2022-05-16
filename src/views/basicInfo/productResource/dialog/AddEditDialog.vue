@@ -15,13 +15,14 @@
           :inline="true"
           :rules="rules"
         >
-          <el-form-item label="资源名称：" prop="resourcesName">
+          <el-form-item label="资源名称:" prop="resourcesName">
             <el-input
-              v-model="form.resourcesName"
+              maxlength="20"
+              v-model.trim="form.resourcesName"
               placeholder="请输入资源名称"
             ></el-input>
           </el-form-item>
-          <el-form-item label="资源类别：" prop="resourcesType">
+          <el-form-item label="资源类别:" prop="resourcesType">
             <el-select v-model="form.resourcesType" placeholder="请选择">
               <el-option
                 v-for="(item, index) in resourcesTypeSelect"
@@ -31,31 +32,32 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="联系姓名：" prop="ownerName">
+          <el-form-item label="联系人姓名:" prop="ownerName">
             <el-input
               v-model="form.ownerName"
-              placeholder="请输入联系姓名"
+              maxlength="20"
+              placeholder="请输入联系人姓名"
             ></el-input>
           </el-form-item>
-          <el-form-item label="联系电话：" prop="ownerPhone">
+          <el-form-item label="联系电话:" prop="ownerPhone">
             <el-input
               v-model="form.ownerPhone"
               placeholder="请输入联系电话"
             ></el-input>
           </el-form-item>
-          <el-form-item label="资源位置经度：" prop="lon">
+          <el-form-item label="资源位置经度:" prop="lon">
             <el-input
               v-model="form.lon"
-              placeholder="请输入资源位置深度"
+              placeholder="请输入资源位置经度"
             ></el-input>
           </el-form-item>
-          <el-form-item label="资源位置纬度：" prop="lat">
+          <el-form-item label="资源位置纬度:" prop="lat">
             <el-input
               v-model="form.lat"
               placeholder="请输入资源位置纬度"
             ></el-input>
           </el-form-item>
-          <el-form-item label="资源地点：" prop="province">
+          <el-form-item label="资源地点:" prop="province">
             <el-row :gutter="45">
               <el-col :span="6">
                 <el-form-itme prop="province">
@@ -123,14 +125,16 @@
               </el-col>
             </el-row>
           </el-form-item>
-          <el-form-item label="详细地址：" prop="address">
+          <el-form-item label="详细地址:" prop="address">
             <el-input
+              maxlength="100"
               v-model="form.address"
               placeholder="请输入详细地址"
             ></el-input>
           </el-form-item>
-          <el-form-item label="服务范围：" prop="serverScope">
+          <el-form-item label="服务范围:" prop="serverScope">
             <el-input
+              maxlength="100"
               v-model="form.serverScope"
               placeholder="请输入服务范围"
             ></el-input>
@@ -160,7 +164,6 @@ import {
   updateResources,
 } from "@/api/basic/resources";
 import { rule } from "@/util/rule";
-import { number } from "echarts";
 
 export default {
   data() {
@@ -184,7 +187,7 @@ export default {
           { required: true, message: "请选择资源类型", trigger: "change" },
         ],
         ownerName: [
-          { required: true, message: "请输入联系姓名", trigger: "blur" },
+          { required: true, message: "请输入联系人姓名", trigger: "blur" },
           { validator: rule.validatorNameCn, trigger: "blur" },
         ],
         ownerPhone: [
@@ -208,9 +211,28 @@ export default {
           { validator: rule.validatorNameCn, trigger: "blur" },
         ],
         serverScope: [
-          { required: true, message: "请输入详细地址", trigger: "blur" },
+          { required: true, message: "请输入服务范围", trigger: "blur" },
           { validator: rule.validatorNameCn, trigger: "blur" },
         ],
+      },
+      startTime:{
+        disabledDate: time => {
+          let endDateVal = this.form.jobEndTime;
+          if(endDateVal) {
+            //小于结束时间
+            return time > new Date(endDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      endTime:{
+        disabledDate: time => {
+          let startDateVal = this.form.jobStartTime;
+          if(startDateVal) {
+            return time < new Date(startDateVal);
+          }
+        },
+        cellClassName: () => {}
       },
     };
   },
@@ -220,6 +242,12 @@ export default {
         this.citySelect = [];
         this.countrySelect = [];
         this.townSelect = [];
+        this.form =  {
+        province: null,
+        city: null,
+        country: null,
+        town: null,
+        }
       }
     },
   },
@@ -327,10 +355,11 @@ export default {
             this.editResourcesInfo(this.form);
           }
         })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
+        // .catch((err) => {
+        //   this.$message.error(err);
+        // });
+      },
+      
   },
 };
 </script>

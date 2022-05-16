@@ -54,7 +54,6 @@ export const getInquireTerminal = (params) => {
   return service.get(`${baseUrl}/inquireTerminal`, {params})
 }
 
-
 //开启面积计算
 export const openComputeArea = (params) => {
   return service.get(`${baseUrl}/openComputeCdMachine`, {params})
@@ -125,6 +124,10 @@ export const getToolType = (params) => {
 export const refreshTerminalCache = (params) => {
   return service.get(`${baseUrl}/refreshTerminalCache`, {params})
 }
+//新增农机
+export const addCdmachine = (params) => {
+  return service.post(`${baseUrl}/addCdmachine`, params)
+}
 
 //修改农机
 export const updateCdmachine = (params) => {
@@ -139,4 +142,9 @@ export const getMachineList  = (params) =>{
 //电子安装单详情
 export const queryMachineDetailInfo  = (params) =>{
   return service.get(`${window.globalUrl.HOME_API}agri-web/cd/installsheet/queryMachineDetailInfo`,{params})
+}
+
+//校验当前 toolIfa 与数据库 有无重复
+export const checkToolIfaExist = (params) => {
+  return service.post(`${baseUrl}/checkToolIfaExist`, params)
 }

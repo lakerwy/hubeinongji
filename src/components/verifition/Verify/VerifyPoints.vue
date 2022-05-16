@@ -3,20 +3,27 @@
     <div class="verify-img-out">
       <div
         class="verify-img-panel"
-        :style="{'width': setSize.imgWidth,
-                                                   'height': setSize.imgHeight,
-                                                   'background-size' : setSize.imgWidth + ' '+ setSize.imgHeight,
-                                                   'margin-bottom': vSpace + 'px'}"
+        :style="{
+          width: setSize.imgWidth,
+          height: setSize.imgHeight,
+          'background-size': setSize.imgWidth + ' ' + setSize.imgHeight,
+          'margin-bottom': vSpace + 'px',
+        }"
       >
-        <div class="verify-refresh" style="z-index:3" @click="refresh" v-show="showRefresh">
+        <div
+          class="verify-refresh"
+          style="z-index: 3"
+          @click="refresh"
+          v-show="showRefresh"
+        >
           <i class="iconfont icon-refresh"></i>
         </div>
         <img
-          :src="'data:image/png;base64,'+pointBackImgBase"
+          :src="'data:image/png;base64,' + pointBackImgBase"
           ref="canvas"
           alt
-          style="width:100%;height:100%;display:block"
-          @click="bindingClick?canvasClick($event):undefined"
+          style="width: 100%; height: 100%; display: block"
+          @click="bindingClick ? canvasClick($event) : undefined"
         />
 
         <div
@@ -24,30 +31,34 @@
           :key="index"
           class="point-area"
           :style="{
-                        'background-color':'#1abd6c',
-                        color:'#fff',
-                        'z-index':9999,
-                        width:'20px',
-                        height:'20px',
-                        'text-align':'center',
-                        'line-height':'20px',
-                        'border-radius': '50%',
-                        position:'absolute',
-                        top:parseInt(tempPoint.y-10) + 'px',
-                        left:parseInt(tempPoint.x-10) + 'px'
-                     }"
-        >{{index + 1}}</div>
+            'background-color': '#1abd6c',
+            color: '#fff',
+            'z-index': 9999,
+            width: '20px',
+            height: '20px',
+            'text-align': 'center',
+            'line-height': '20px',
+            'border-radius': '50%',
+            position: 'absolute',
+            top: parseInt(tempPoint.y - 10) + 'px',
+            left: parseInt(tempPoint.x - 10) + 'px',
+          }"
+        >
+          {{ index + 1 }}
+        </div>
       </div>
     </div>
     <!-- 'height': this.barSize.height, -->
     <div
       class="verify-bar-area"
-      :style="{'width': setSize.imgWidth,
-                      'color': this.barAreaColor,
-                      'border-color': this.barAreaBorderColor,
-                      'line-height':this.barSize.height}"
+      :style="{
+        width: setSize.imgWidth,
+        color: this.barAreaColor,
+        'border-color': this.barAreaBorderColor,
+        'line-height': this.barSize.height,
+      }"
     >
-      <span class="verify-msg">{{text}}</span>
+      <span class="verify-msg">{{ text }}</span>
     </div>
   </div>
 </template>
@@ -244,7 +255,7 @@ export default {
         let y = Math.round((155 * p.y) / parseInt(imgSize.imgHeight));
         return { x, y };
       });
-      // console.log(newPointArr,"newPointArr");
+      // //console.log(newPointArr,"newPointArr");
       return newPointArr;
     },
   },

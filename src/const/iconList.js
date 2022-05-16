@@ -1,8 +1,8 @@
 export default [
   {
-    label: '阿里云图标',
+    label: '菜单图标',
     list: [
-      'img/icon-权限管理.png',
+      'img/icon-permissionset.png',
       'icon-quanxianguanli',
       'icon-yonghuguanli',
       'icon-jiaoseguanli',

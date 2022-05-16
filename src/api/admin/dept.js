@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API;
 
 export function fetchTree(query) {
   return request({
-    url: '/admin/dept/tree',
+    url: `${baseUrl}admin/dept/tree`,
     method: 'get',
     params: query
   })
@@ -27,7 +28,7 @@ export function fetchTree(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/dept/',
+    url: `${baseUrl}admin/dept/`,
     method: 'post',
     data: obj
   })
@@ -35,21 +36,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/dept/' + id,
+    url: `${baseUrl}admin/dept/` + id,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return request({
-    url: '/admin/dept/' + id,
+    url: `${baseUrl}admin/dept/` + id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/dept/',
+    url: 'admin/dept/',
     method: 'put',
     data: obj
   })

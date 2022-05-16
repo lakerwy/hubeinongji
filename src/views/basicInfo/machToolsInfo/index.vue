@@ -30,7 +30,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  width: calc(100% - 227px);
+  width: 100%;
   height: 100%;
 
   .title {

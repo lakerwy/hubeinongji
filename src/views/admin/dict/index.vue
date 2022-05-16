@@ -31,7 +31,7 @@
                           <el-input v-model="searchForm.itemName" placeholder="请输入字典项名称"></el-input>
                       </el-form-item>-->
                     <el-form-item class="btn">
-                        <el-button style="width: 90px;" class="shadow-btn" plain round size="medium"
+                        <el-button style="width: 90px;" class="shadow-btn" plain round size="medium" v-if="btnPermis.btnView"
                                    @click="searchChange">查询
                         </el-button>
                     </el-form-item>
@@ -41,16 +41,16 @@
                         class="my-table"
                         :page="page"
                         :data="tableData"
-                        :permission="permissionList"
                         :table-loading="tableLoading"
                         :option="tableOption"
-                        @on-load="getList"
+
                         @search-change="searchChange"
                         @size-change="sizeChange"
                         @current-change="currentChange"
                         @select="handleSelectionChange">
                     <template slot="menuLeft">
                         <el-button
+                                v-if="btnPermis.btnAdd"
                                 class="shadow-btn"
                                 plain
                                 round
@@ -58,6 +58,7 @@
                                 @click="handleAdd">新增
                         </el-button>
                         <el-button
+                                v-if="btnPermis.btnDelete"
                                 class="shadow-btn"
                                 plain
                                 round
@@ -68,13 +69,14 @@
                     <template slot="listType" slot-scope="scope">
                         <!-- v-if="editBtn" -->
                         <el-button
+                                v-if="btnPermis.btnEdit"
                                 type="text"
                                 size="medium"
                                 class="table-text-btn"
                                 @click="handleUpdate(scope.row,scope.index)">
                             {{scope.row.listType}}
                         </el-button>
-                        <!-- <span v-else>{{scope.row.listType}}</span> -->
+                         <span v-else>{{scope.row.listType}}</span>
                     </template>
                     <!-- <template
                       slot-scope="scope"
@@ -92,6 +94,7 @@
             <dictTableForm
                     v-if="isEdit"
                     :listdata="listData"
+                    :editstatus="editStatus"
                     @close="closeDict"/>
         </div>
         <myPagination
@@ -99,7 +102,9 @@
                 :currentPage="page.currentPage"
                 :pageSize="page.pageSize"
                 :total="page.total"
-                />
+                @size-change="sizeChange"
+                @current-change="currentChange"
+        />
         <!-- <el-dialog
                  class="my-dialog"
                  :visible.sync="dialogFormVisible"
@@ -151,6 +156,7 @@
         },
         data() {
             return {
+                editStatus: false,
                 searchForm: {
                     listType: undefined,
                     listTypeDesc: undefined,
@@ -166,7 +172,7 @@
                 tableData: [],
                 tableDictItemData: [],
                 page: {
-                    total: 100, // 总页数
+                    total: 0, // 总页数
                     currentPage: 1, // 当前页数
                     pageSize: 10 // 每页显示多少条
                 },
@@ -185,12 +191,18 @@
                     }
                 }, // 当前行数据
                 selection: [], // 选择的数据
+                btnPermis: {  //按钮权限
+                  btnView: false,
+                  btnAdd: false,
+                  btnEdit: false,
+                  btnDelete: false,
+                }
             }
         },
         computed: {
             ...mapGetters(['permissions']),
             // 通过函数精确控制编辑新增删除按钮
-            permissionList() {
+            /*permissionList() {
                 return {
                     // addBtn: this.vaildData(this.permissions.sys_dict_add, false),
                     // delBtn: this.vaildData(this.permissions.sys_dict_del, false),
@@ -199,12 +211,21 @@
                     delBtn: this.vaildData(this.permissions.sys_dict_del, true),
                     editBtn: this.vaildData(this.permissions.sys_dict_edit, true)
                 }
-            }
+            }*/
         },
         created() {
-            //this.getList()
+             this.getBtnPermis();
+             if(this.btnPermis.btnView) {
+                 this.getList()
+             }
         },
         methods: {
+            getBtnPermis() {
+              this.btnPermis.btnView = this.permissions[window.global.buttonPremission.dictView];
+              this.btnPermis.btnAdd = this.permissions[window.global.buttonPremission.dictAdd];
+              this.btnPermis.btnEdit = this.permissions[window.global.buttonPremission.dictEdit];
+              this.btnPermis.btnDelete = this.permissions[window.global.buttonPremission.dictDelete];
+            },
             //======字典表格相关=====
             getList() {
                 this.tableLoading = true
@@ -222,6 +243,7 @@
                 this.selection = selection;
             },
             handleAdd: function () {
+                this.editStatus = false;
                 this.isEdit = true;
                 this.listData = Object.assign({}, {
                     listType: null,
@@ -236,14 +258,14 @@
                     this.$message.info('请选择需要删除的数据');
                     return;
                 }
-                console.log(this.selection)
-                var list='';
+                //console.log(this.selection)
+                var list = '';
                 this.selection.forEach((ele, index) => {
-                    console.log("ele",ele)
+                    //console.log("ele", ele)
                     list += ele.listType + ","
                 })
-                if (list) list = list.substr(0,list.length-1);
-                this.$confirm('是否确认删除[' + list + ']的所有字典项吗?', '警告', {
+                if (list) list = list.substr(0, list.length - 1);
+                this.$confirm('是否确认删除[' + list + ']的所有字典项吗?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -254,13 +276,14 @@
                         this.$message.success('删除成功')
                         this.getList()
                     } else {
-                        this.$message.success('删除失败')
+                        this.$message.info('删除失败')
                     }
 
                 }).catch(function () {
                 })
             },
             handleUpdate: function (row, index, done) {
+                this.editStatus = true;
                 this.isEdit = true;
                 //获取子项
                 fetchItemList(Object.assign({
@@ -268,8 +291,8 @@
                     size: this.itemPage.pageSize
                 }, {listType: row.listType})).then(response => {
                     this.listData = Object.assign({}, row, response);
-                    console.log("listData");
-                    console.log(this.listData);
+                    //console.log("listData");
+                    //console.log(this.listData);
                 })
             },
             handleSave: function (row, done) {
@@ -339,7 +362,7 @@
                 this.getDictItemList()
             },
             rowItemDel: function (row) {
-                this.$confirm('是否确认删除数据为"' + row.label + '"的数据项?', '警告', {
+                this.$confirm('是否确认删除数据为"' + row.label + '"的数据项?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -396,7 +419,10 @@
             height: calc(100% - 84px);
 
             /deep/ .el-form {
-                height: calc(100% - 54px);
+                // height: calc(100% - 54px);
+            }
+            /deep/ .avue-crud__pagination {
+              display: none;
             }
         }
     }

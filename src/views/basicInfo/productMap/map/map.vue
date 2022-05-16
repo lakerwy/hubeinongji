@@ -1,12 +1,13 @@
 <template>
   <div v-if="reloadVal">
     <MyMap ref="mapCom" style="width: 100%; height: 100%" @ready="init" @nullselect="clearSelectFeature">
-      <template v-for="(item, name, index) in vectorRegionDataSource">
+      <template v-for="(item, name, index) in vectorDataSource">
         <MyMapVectorJson
           :ref="name"
           :id="item.id"
-          :key="item.id"
+          :key="index"
           :name="item.name"
+          :visble="item.visible"
           :dataSource="item.dataSource"
           :styles="item.styles"
           :hoverStyles="item.hoverStyles"
@@ -15,26 +16,6 @@
           :fitOption="item.fitOption"
           @click="handleClick"
         ></MyMapVectorJson>
-      </template>
-      <template v-for="(item, name, index) in vectorDataSource">
-        <MyMapVectorCluster
-          :ref="name"
-          :id="item.id"
-          :key="item.id"
-          :name="item.name"
-          :dataSource="item.dataSource"
-          :styles="item.styles"
-          :hoverStyles="item.hoverStyles"
-          :zindex="item.zindex"
-          :isFit="item.isFit"
-          :fitOption="item.fitOption"
-          :clusterStyles="item.clusterStyles"
-          @click="handleClick"
-          :scales="[60000, 600000, 1200000]"
-          :distances="[100, 160, 320]"
-          :distance="20"
-          :isCluster="true"
-        ></MyMapVectorCluster>
       </template>
       <MyMapPopup ref="popup">
         <PopupInfo v-if="info" :data="info" :selectId="info ? info.id : null" @close="clearSelectFeature"></PopupInfo>
@@ -46,28 +27,24 @@
 <script>
 import MyMap from "@map/components/my-map/Map";
 import MyMapVectorJson from "@map/components/my-map-vector/Json";
-import MyMapVectorCluster from "@map/components/my-map-vector/Cluster";
 import MyMapPopup from "@map/components/my-map-overlay/Popup";
 import PopupInfo from "../component/PopupInfo";
 import * as mapHandler from "../../../../util/mapHanlder";
 import { getCenterByFeature } from "@map/js/feature";
 
+
 export default {
   components: {
     MyMap,
     MyMapVectorJson,
-    MyMapVectorCluster,
     MyMapPopup,
-    PopupInfo,
+    PopupInfo
   },
   data() {
     return {
       vectorDataSource: {},
-      vectorRegionDataSource: {},
       selectFeature: null,
       reloadVal: true,
-      layer: {},
-      plotInfo: null,
     };
   },
   watch: {
@@ -104,25 +81,31 @@ export default {
         this.reloadVal = true;
       })
     },
-    async init() {
+    init() {
       // 行政区划
       let region = mapHandler.getRegionData();
       if (region) {
         // this.vectorDataSource[region.id] = region;
-        this.$set(this.vectorRegionDataSource, region.id, region)
+        this.$set(this.vectorDataSource, region.id, region)
       }
-
     },
     getMap() {
       return this.$refs.mapCom.map;
     },
     handleClick(e, feature) {
-      if(feature._layer.layerDateType=== "cluster"){
-        return;
-      }
       if (feature) {
         this.selectFeature = feature;
-        this.$refs.popup.show(e.coordinate);
+        // this.$refs.mapCom.map.getView().fit(feature.getGeometry(),{maxZoom: 14});
+        let coordinate = getCenterByFeature(feature);
+        this.$refs.mapCom.map.getView().fit(feature.getGeometry(), {
+          maxZoom: 15,
+          duration: 1000,
+          callback: () => {
+            // 弹出要素事件
+            // this.handleClick({ coordinate: c }, feature);
+            this.$refs.popup.show(coordinate);
+          },
+        });
       }
     },
     clearSelectFeature() {

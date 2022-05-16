@@ -20,21 +20,26 @@ export default {
       type: [Object, Array, Function],
       default: () => {
         return null;
-      },
+      }
     },
     hoverStyles: {
       type: [Object, Array, Function],
       default: () => {
         return null;
-      },
+      }
     },
     isVectorImage: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {};
+  },
+  watch: {
+    styles() {
+      this.setStyles(this.styles);
+    }
   },
   methods: {
     init() {
@@ -49,12 +54,12 @@ export default {
       if (this.isVectorImage) {
         this.layer = new DxVectorImageLayer({
           source: this.source,
-          styles: this.styles,
+          styles: this.styles
         });
       } else {
         this.layer = new DxVectorLayer({
           source: this.source,
-          styles: this.styles,
+          styles: this.styles
         });
       }
 
@@ -87,9 +92,9 @@ export default {
         feature.setStyle(style);
         feature.ghostFeatureStyle = style;
       }
-    },
+    }
   },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {}
 };
 </script>

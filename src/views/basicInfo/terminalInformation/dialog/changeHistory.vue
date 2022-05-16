@@ -53,7 +53,7 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 100,
+        total: 0,
         pageSizes: [10,20,30,40,50,100]
       },
     };
@@ -61,7 +61,7 @@ export default {
   watch: {
     "selectId": {
       handler(newName, oldName) {
-        console.log(newName);
+        //console.log(newName);
         if(newName){
           this.queryTerminalHistroy(newName);
         }

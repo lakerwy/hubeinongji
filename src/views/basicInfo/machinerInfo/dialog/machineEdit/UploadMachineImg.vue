@@ -8,10 +8,12 @@
   >
     <div class="content">
       <div class="imgBox">
-        <img :src="url" alt="">
+        <img :src="localViewUrl" v-if="localViewUrl">
       </div>
       <el-upload
+        ref="upload"
         class="upload-demo"
+        :headers="headers"
         :action="uploadUrl"
         multiple
         :data="uploadData"
@@ -21,10 +23,11 @@
         :on-success="handleSuccess"
         :on-error="handleError"
         :file-list="chooseFilelist"
+        :auto-upload="false"
       >
         <span>选择文件：</span>
         <el-button size="small" type="primary" class="shadow-btn">选择文件</el-button>
-        <span slot="tip"> 未选择任何文件</span>
+        <span slot="tip" v-show="!localViewUrl"> 未选择任何文件</span>
       </el-upload>
     </div>
     <div slot="footer" class="dialog-footer">
@@ -34,13 +37,10 @@
 </template>
 
 <script>
+import store from '@/store'
+
 export default {
-  props: {
-    uploadUrl:{
-      type: String,
-      default: window.globalUrl.HOME_API + 'agri-web/cd/machine/pictureImport',
-    }
-  },
+  props: ['uploadTag'],
   name: "UploadMachineImg",
   data(){
     return {
@@ -48,16 +48,21 @@ export default {
       uploadData: {},
       url: '',
       chooseFilelist: [],
+      uploadUrl: window.globalUrl.HOME_API + 'agri-web/cd/machine/pictureImport',
+      localViewUrl: '',
+      headers: {
+        Authorization: 'Bearer ' + store.getters.access_token
+      }
     }
   },
   methods: {
     save(){
-      if(this.url){
-        this.$parent.form.machineImage = this.url;
-      }
-      this.uploadVisible = false;
+      this.$refs.upload.submit();
     },
     handleChange(file,fileList){
+      let URL = window.URL || window.webkitURL;
+      let modelURL = URL.createObjectURL(file.raw);
+      this.localViewUrl = modelURL;
       if(fileList.length>1){
         fileList.splice(0,1);
       }
@@ -67,6 +72,13 @@ export default {
       if(!code) {
         this.url='';
         this.url = data;
+        this.$message.success('导入成功')
+        if(this.uploadTag == 1){
+          this.$parent.form.machineImage = this.url;
+        } else {
+          this.$parent.form.drivingImage = this.url;
+        }
+        this.uploadVisible = false;
       } else {
         this.$message.error(msg || '上传失败')
       }
@@ -90,6 +102,10 @@ export default {
     width: 100px;
     height: 100px;
     border: 1px dotted;
+    img {
+      width: 100px;
+      height: 100px;
+    }
   }
 
   .upload-demo {

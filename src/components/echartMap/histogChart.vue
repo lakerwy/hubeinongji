@@ -41,7 +41,7 @@ export default {
   },
   mounted() {
     // let map = echarts.getMap('湖北省');
-    // console.log(map)
+    // //console.log(map)
     this.getChartData();
     this.getMachineDataGroup('武汉市')
     // initEcharts('histogChart', echartOption.machToolOption);

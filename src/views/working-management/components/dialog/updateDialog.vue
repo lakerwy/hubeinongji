@@ -4,6 +4,7 @@
     class="my-dialog uploadDialog" 
     title="批量修改" 
     :visible.sync="dialogVisible"
+    :before-close="close"
     width="1261px"
     top="8vh">
     <el-form class="add-form" ref="form" :model="form" :rules="formRule" label-width="150px" inline>
@@ -237,7 +238,12 @@ export default {
                 callback()
               }
             }
-          }
+          },
+          // {
+          //   pattern: /^(?:0|[1-9][0-9]?|100)$/,
+          //   message: "范围在0-100",
+          //   trigger: "blur",
+          // },
         ],
         depMaxForChange: [
           { trigger: 'blur',
@@ -251,7 +257,12 @@ export default {
                 callback()
               }
             }
-          }
+          },
+          // {
+          //   pattern: /^(?:0|[1-9][0-9]?|100)$/,
+          //   message: "范围在0-100",
+          //   trigger: "blur",
+          // },
         ],
         depRateMinForChange: [
           { trigger: 'blur',
@@ -314,9 +325,6 @@ export default {
       }
     }
   },
-  created() {
-    
-  },
   methods: {
     // 请求农机字典数据
     async initCarTypes() {
@@ -365,9 +373,10 @@ export default {
         toolType: val
       }
       let res = await selectJobTypeChange(params);
-      if(res.jobType) {
-        this.$set(this.form, 'JobTypeChanged1', res.jobTypeName);
-        this.$set(this.form, 'updateJobTypeChanged', res.jobType);
+      const {code, data, msg} = res;
+      if(!code) {
+        this.$set(this.form, 'JobTypeChanged1', data.jobTypeName);
+        this.$set(this.form, 'updateJobTypeChanged', data.jobType);
       }
     },
     // 省数据选择
@@ -428,7 +437,7 @@ export default {
         machine_type_forchange: this.form.machineTypeForChange,
         ...this.form
       }
-      console.log(params, 'params');
+      //console.log(params, 'params');
       this.$refs.form.validate(async valid => {
         if(valid) {
           let res = await updateJobAreaAlot(params);
@@ -445,8 +454,9 @@ export default {
       })
     }, 
     close() {
-      this.form = {};
+      // this.form = {};
       this.dialogVisible = false;
+      this.$refs.form.resetFields();
     }
   }
 }
@@ -523,6 +533,20 @@ export default {
     font-size: 16px;
   }
 
+  .el-input,.el-select{
+    /deep/ input::-webkit-input-placeholder {
+      color: #285583;
+    }
+
+    input::-moz-input-placeholder {
+      color: #285583;
+    }
+
+    input::-ms-input-placeholder {
+      color: #285583;
+    }
+  }
+
   .datepicker {
     width: 218px !important;
     font-size: 12px;
@@ -535,17 +559,6 @@ export default {
       height: 40px;
       line-height: 40px;
       padding: 0 0 0 30px !important;
-    }
-    input::-webkit-input-placeholder {
-      color: #3a5571;
-    }
-
-    input::-moz-input-placeholder {
-      color: #3a5571;
-    }
-
-    input::-ms-input-placeholder {
-      color: #3a5571;
     }
 
     .el-input__prefix {

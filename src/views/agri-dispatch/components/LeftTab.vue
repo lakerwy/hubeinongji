@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="left-tab-container">
+    <div :class="show? 'hideicon' : 'showicon'" @click="close">
+      <button class="pbw_button"> 点击查询 </button>
+    </div>
+
+    <div class="left-tab-container" :class="show ? 'show':'hide'">
       <div class="title">
         <p>
           <img
@@ -9,9 +13,11 @@
             alt=""
           />作业需求总量
         </p>
-        <img src="@/assets/images/agri-dispatch-takeback.png" alt=""/>
+        <img src="@/assets/images/agri-dispatch-takeback.png" alt="" :class="{'rightimg':!show}" @click="close" />
       </div>
+
       <div class="border"></div>
+
       <div class="dropdown-container">
         <el-dropdown>
           <div>
@@ -20,15 +26,19 @@
             </el-button>
           </div>
           <el-dropdown-menu class="dropdown">
-            <el-dropdown-item class="dropdown-item">附近农机(5km内)</el-dropdown-item>
-            <el-dropdown-item class="dropdown-item">附近农机(10km内)</el-dropdown-item>
+            <el-dropdown-item class="dropdown-item"
+              >附近农机(5km内)</el-dropdown-item
+            >
+            <el-dropdown-item class="dropdown-item"
+              >附近农机(10km内)</el-dropdown-item
+            >
           </el-dropdown-menu>
         </el-dropdown>
         <el-dropdown>
           <div>
-          <el-button type="primary" class="aaa">
-            作物类型 <i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
+            <el-button type="primary" class="aaa">
+              作物类型 <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
           </div>
           <el-dropdown-menu slot="dropdown" class="dropdown">
             <el-dropdown-item class="dropdown-item">黄金糕</el-dropdown-item>
@@ -36,42 +46,52 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
+
       <div class="item-container">
-        <div v-for="(item,index) in details" class="item" :class="activeIndex == index?'active':''" :key="index"
-             @click="itemHandleClick(item,index)">
+        <div
+          v-for="(item, index) in details"
+          class="item"
+          :class="activeIndex == index ? 'active' : ''"
+          :key="index"
+          @click="itemHandleClick(item, index)"
+        >
           <div class="order-number">{{ item.id }}</div>
           <div>
             <div class="item-up-part">
               <div class="item-up-part-left">{{ item.time }}</div>
               <div class="item-up-part-right">{{ item.cropType }}</div>
             </div>
-            <div class="item-down-part"><p style="width:165px">作业规模：{{ item.scale }}亩</p>
-              <p>拟引进农机量：{{ item.agriNeeded }}辆</p></div>
+            <div class="item-down-part">
+              <p style="width: 165px">作业规模：{{ item.scale }}亩</p>
+              <p>拟引进农机量：{{ item.agriNeeded }}辆</p>
+            </div>
           </div>
         </div>
       </div>
 
-
+      <!-- pbw修改适配小的界面 -->
       <div class="pagination-container">
         <myPagination
           :currentPage="currentPage"
           :pageSize="pageSize"
-          :total="total"/>
+          Layout="sizes, prev, slot, next, ->, total"
+          :total="total"
+        />
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
-import myPagination from '_com/myPagination/index'
+import myPagination from "_com/myPagination/index";
 
 export default {
   components: {
-    myPagination
+    myPagination,
   },
   data() {
     return {
+      show:true,
       details: [
         {
           id: 1,
@@ -146,26 +166,73 @@ export default {
       ],
       activeIndex: -1,
       currentPage: 1,
-      pageSize: 1,
+      pageSize: 10,
       total: 100,
     };
   },
   methods: {
     itemHandleClick(item, i) {
       this.activeIndex = i;
-      this.$emit('itemHandleClick', item)
+      this.$emit("itemHandleClick", item);
     },
-  }
+    close(){
+      this.show = !this.show;
+    }
+  },
 };
 </script>
 
 <style lang="less" scoped>
+.pbw_button{
+  background-color: #07223c;
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+.hideicon{
+  display: none;
+}
+.showicon{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+.hide{
+  animation: hideanimation 1s linear forwards;
+  position: absolute;
+}
+.show{
+  animation: showanimation 1s linear forwards;
+  position: absolute;
+}
+.rightimg{
+  animation: imganimation 0.5s linear forwards;
+}
+@keyframes hideanimation
+{
+    from {left: 0;}
+    to {left: -400px;}
+}
+@keyframes showanimation
+{
+    from {left: -400px;}
+    to {left: 0;}
+}
+@keyframes imganimation
+{
+    from {transform: rotate(0deg);}
+    to {transform: rotate(180deg);}
+}
+
 .left-tab-container {
   width: 400px;
-  height: 800px;
+  // height: 800px;
+  height: calc(100% - 10px);
   background-color: rgba(4, 18, 44, 0.9);
   position: absolute;
-  left: 20px;
+  left: 0;
   top: 10px;
 
   .title {
@@ -179,14 +246,6 @@ export default {
     padding-right: 25px;
     justify-content: space-between;
     font-weight: 600;
-    // border-image: -webkit-linear-gradient(
-    //   left,
-    //   #082e46,
-    //   #082e46,
-    //   #72f3ff,
-    //   #082e46,
-    //   #082e46
-    // );
   }
 
   .border {
@@ -205,7 +264,8 @@ export default {
   }
 
   .item-container {
-    height: 630px;
+    // height: 630px;
+    height: calc(100% - 165px);
     overflow-y: scroll;
     margin-right: 8px;
 
@@ -258,7 +318,8 @@ export default {
       }
     }
 
-    .item:hover, .active {
+    .item:hover,
+    .active {
       .order-number {
         background-color: #0a3549;
       }
@@ -277,8 +338,6 @@ export default {
   }
 }
 
-
-
 /deep/ .el-button {
   background-color: transparent;
   border: 1px #356e97 solid;
@@ -290,6 +349,4 @@ export default {
     margin-left: 50px;
   }
 }
-
-
 </style>

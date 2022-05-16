@@ -137,3 +137,33 @@ export const insertApperJobDepth = (params) => {
     data: params,
   })
 }
+
+//上传图片
+export const workUploadImg = (params) => {
+  return service.post(`${baseUrl}/uploadImg`, params,)
+}
+
+//获取重复地块详细信息
+export const queryRepeatAreaByRowId = (params) => {
+  return service.get(`${baseUrl}/queryRepeatAreaByRowId`, {params})
+}
+
+//导出作业报表
+export const excelAreaInfo = (params) => {
+  return service({
+    url: `${baseUrl}/excelAreaInfo`,
+    method: 'post',
+    responseType: 'blob',
+    data: params,
+  }).then((response) => { // 处理返回的文件流
+    const blob = response
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = params.title;
+    document.body.appendChild(link)
+    link.click()
+    link.remove();
+  }).catch(err=>{
+    console.log(err);
+  })
+}

@@ -1,31 +1,70 @@
 <template>
-<!-- 修改面积 -->
-  <el-dialog 
-    class="my-dialog area-dialog" 
-    title="修改地块面积" 
+  <!-- 修改面积 -->
+  <el-dialog
+    class="my-dialog area-dialog"
+    title="修改作业信息"
     :visible.sync="dialogVisible"
     width="55%"
     top="30vh"
-    @close="close">
-    <el-form class="add-form" ref="form" :model="form" label-width="150px" inline>
+    @close="close"
+  >
+    <el-form
+      class="add-form"
+      ref="form"
+      :model="form"
+      label-width="150px"
+      inline
+      :rules="rules"
+    >
       <el-form-item label="机具类型：">
-        <el-select v-model="form.ToolTypeUpdate" placeholder="请选择机具类型" @change="toolChange">
-          <el-option v-for="item in toolTypes" :key="item.text" :label="item.text" :value="item.value"></el-option>
+        <el-select
+          v-model="form.ToolTypeUpdate"
+          placeholder="请选择机具类型"
+          @change="toolChange"
+        >
+          <el-option
+            v-for="item in toolTypes"
+            :key="item.text"
+            :label="item.text"
+            :value="item.value"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="作业类型：" prop="JobTypeChanged">
-        <el-select v-model="form.JobTypeChanged" disabled placeholder="请选择作业类型">
-          <el-option v-for="item in jobTypes" :key="item.itemCode" :label="item.itemName" :value="item.itemName"></el-option>
+        <el-select
+          v-model="form.JobTypeChanged"
+          disabled
+          placeholder="请选择作业类型"
+        >
+          <el-option
+            v-for="item in jobTypes"
+            :key="item.itemCode"
+            :label="item.itemName"
+            :value="item.itemName"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="平均深度：" prop="avgDepth">
-        <el-input type="number" v-model.number="form.avgDepth" placeholder="请输入平均深度"></el-input>
+        <el-input
+          type="number"
+          v-model.number="form.avgDepth"
+          placeholder="请输入平均深度"
+        ></el-input>
       </el-form-item>
       <el-form-item label="深度合格率：" prop="depthRate">
-        <el-input type="number" v-model.number="form.depthRate" placeholder="输入深度合格率"></el-input>
+        <el-input
+          type="number"
+          v-model.number="form.depthRate"
+          placeholder="输入深度合格率"
+        ></el-input>
       </el-form-item>
       <el-form-item label="计算面积：">
-        <el-input type="number" v-model.number="form.computeAreaUpdate" readonly placeholder="请输入计算面积">
+        <el-input
+          type="number"
+          v-model.number="form.computeAreaUpdate"
+          readonly
+          placeholder="请输入计算面积"
+        >
           <template slot="suffix">
             <el-divider direction="vertical"></el-divider>
             <span class="unit">亩</span>
@@ -33,7 +72,11 @@
         </el-input>
       </el-form-item>
       <el-form-item label="修改面积：">
-        <el-input type="number" v-model.number="form.modifyArea" placeholder="请输入修改面积">
+        <el-input
+          type="number"
+          v-model.number="form.modifyArea"
+          placeholder="请输入修改面积"
+        >
           <template slot="suffix">
             <el-divider direction="vertical"></el-divider>
             <span class="unit">亩</span>
@@ -43,59 +86,117 @@
       <el-form-item label="作业区域：" class="region">
         <el-row>
           <el-col :span="5">
-            <el-select style="width:186px;" v-model="form.provinceId" @change="handleProvinceChange" placeholder="请选择省">
-              <el-option v-for="item in province" :key="item.domainName" :label="item.domainName" :value="item.rowId"></el-option>
+            <el-select
+              v-model="form.provinceId"
+              @change="handleProvinceChange"
+              placeholder="请选择省"
+            >
+              <el-option
+                v-for="item in province"
+                :key="item.domainName"
+                :label="item.domainName"
+                :value="item.rowId"
+              ></el-option>
             </el-select>
           </el-col>
           <el-col class="line" :span="1">—</el-col>
           <el-col :span="5">
-            <el-select style="width:186px;" v-model="form.cityId" @change="handleCityChange" placeholder="请选择市">
-              <el-option v-for="item in city" :key="item.domainName" :label="item.domainName" :value="item.rowId"></el-option>
+            <el-select
+              v-model="form.cityId"
+              @change="handleCityChange"
+              placeholder="请选择市"
+            >
+              <el-option
+                v-for="item in city"
+                :key="item.domainName"
+                :label="item.domainName"
+                :value="item.rowId"
+              ></el-option>
             </el-select>
           </el-col>
           <el-col class="line" :span="1">—</el-col>
           <el-col :span="5">
-            <el-select style="width:186px;" v-model="form.countryId" @change="handleCountryChange" placeholder="请选择县">
-              <el-option v-for="item in country" :key="item.domainName" :label="item.domainName" :value="item.rowId"></el-option>
+            <el-select
+              v-model="form.countryId"
+              @change="handleCountryChange"
+              placeholder="请选择县"
+            >
+              <el-option
+                v-for="item in country"
+                :key="item.domainName"
+                :label="item.domainName"
+                :value="item.rowId"
+              ></el-option>
             </el-select>
           </el-col>
           <el-col class="line" :span="1">—</el-col>
           <el-col :span="5">
-            <el-select style="width:186px;" v-model="form.townId" placeholder="请选择街道/镇">
-              <el-option v-for="item in street" :key="item.domainName" :label="item.domainName" :value="item.rowId"></el-option>
+            <el-select v-model="form.townId" placeholder="请选择街道/镇">
+              <el-option
+                v-for="item in street"
+                :key="item.domainName"
+                :label="item.domainName"
+                :value="item.rowId"
+              ></el-option>
             </el-select>
           </el-col>
         </el-row>
       </el-form-item>
       <el-form-item label="作业地址：" prop="address">
-        <el-input style="width: 400px;" v-model="form.address" placeholder="请输入作业地址"></el-input>
+        <el-input
+          style="width: 400px"
+          v-model="form.address"
+          placeholder="请输入作业地址"
+        ></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" class="shadow-btn" plain round @click="submit">保存</el-button>
+      <el-button type="primary" class="shadow-btn" plain round @click="submit"
+        >保存</el-button
+      >
       <el-button class="shadow-btn" plain round @click="close">返回</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { selectToolTypeChange, selectProvince, selectJobTypeChange, updateJobArea } from '@/api/working/index'
-import{ getDictByListType } from '@/api/basic/index'
-import { filterDict } from '@/util/util.js'
+import {
+  selectToolTypeChange,
+  selectProvince,
+  selectJobTypeChange,
+  updateJobArea,
+} from "@/api/working/index";
+import { getDictByListType } from "@/api/basic/index";
+import { filterDict } from "@/util/util.js";
 export default {
-  name: 'updateAreaDialog',
+  name: "updateAreaDialog",
   data() {
+    let theRules = (rule, value, callback) => {
+      var patten = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+      if (!patten.test(value)) {
+        callback(new Error("请输入数字"));
+      } else {
+        value = "" + value;
+        if (value.length > 8) {
+          callback(new Error("字符长度最大为15"));
+        } else if (value < 0 || value > 1) {
+          callback(new Error("范围在0-1"));
+        } else {
+          callback();
+        }
+      }
+    };
     return {
       dialogVisible: false,
       form: {
-        provinceId: '',
-        cityId: '',
-        countryId: '',
-        townId: '',
-        avgDepth: '',
-        depthRate: '',
-        modifyArea: '',
-        address: ''
+        provinceId: "",
+        cityId: "",
+        countryId: "",
+        townId: "",
+        avgDepth: "",
+        depthRate: "",
+        modifyArea: "",
+        address: "",
       },
       toolTypes: [],
       jobTypes: [],
@@ -103,28 +204,31 @@ export default {
       city: [], // 市
       country: [], // 县
       street: [], // 街道
-    }
+      rules:{
+        depthRate:[
+          { validator: theRules, trigger: "blur" },
+        ]
+      }
+    };
   },
   props: {
     data: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   watch: {
     dialogVisible(newV) {
       // 通过监听dialog状态来初始化请求
-      if(newV) {
+      if (newV) {
         this.initData();
         this.initJobTypes();
         this.initToolTypes();
-        this.initProvince(0, 'province')
+        this.initProvince(0, "province");
       }
-    }
+    },
   },
-  created() {
-    
-  },
+  created() {},
   methods: {
     initData() {
       this.form.avgDepth = this.data.avgDepth;
@@ -132,7 +236,7 @@ export default {
       this.form.modifyArea = this.data.modifyArea;
       this.form.address = this.data.address;
       this.form.ToolTypeUpdate = this.data.toolType;
-      if(this.form.ToolTypeUpdate) {
+      if (this.form.ToolTypeUpdate) {
         this.toolChange(this.form.ToolTypeUpdate);
       }
       this.form.computeAreaUpdate = this.data.computeArea;
@@ -142,62 +246,68 @@ export default {
     // 根据农机类型获取机具列表
     async initToolTypes() {
       let params = {
-        machineType: this.data.machineType
-      }
+        machineType: this.data.machineType,
+      };
       let res = await selectToolTypeChange(params);
-      if(res) {
-        this.toolTypes = res;
+      const { code, data, msg } = res;
+      if (!code) {
+        this.toolTypes = data;
       }
     },
     async initJobTypes() {
       let params = {
-        listType: 'job_type'
-      }
+        listType: "job_type",
+      };
       let res = await getDictByListType(params);
-      let {code, data} = res;
-      if(code == 0) {
+      let { code, data } = res;
+      if (code == 0) {
         this.jobTypes = data;
       }
     },
     // 机具类型改变
     async toolChange(val) {
       let params = {
-        toolType: val
-      }
+        toolType: val,
+      };
       let res = await selectJobTypeChange(params);
-      if(res.jobType) {
-        this.$set(this.form, 'JobTypeChanged', res.jobTypeName);
-        this.$set(this.form, 'updateJobType', res.jobType);
+      const { code, data, msg } = res;
+      if (!code) {
+        this.$set(this.form, "JobTypeChanged", data.jobTypeName);
+        this.$set(this.form, "updateJobType", data.jobType);
       }
     },
-    async initProvince(id = 0, t = 'province') {
+    async initProvince(id = 0, t = "province") {
       let params = {
-        groupPId: id
-      }
+        groupPId: id,
+      };
       let res = await selectProvince(params);
-      const {code, data} = res;
-      if(code == 0) {
+      const { code, data } = res;
+      if (code == 0) {
         this[t] = data;
       }
     },
     // 省数据选择
     handleProvinceChange(val) {
-      this.initProvince(val, 'city');
-      this.form.cityId = '';
-      this.form.countryId = '';
-      this.form.townId = '';
+      this.initProvince(val, "city");
+      this.form.cityId = "";
+      this.form.countryId = "";
+      this.form.townId = "";
     },
     handleCityChange(val) {
-      this.initProvince(val, 'country');
-      this.form.countryId = '';
-      this.form.townId = '';
+      this.initProvince(val, "country");
+      this.form.countryId = "";
+      this.form.townId = "";
     },
     handleCountryChange(val) {
-      this.initProvince(val, 'street');
-      this.form.townId = '';
+      this.initProvince(val, "street");
+      this.form.townId = "";
     },
     nameFilter(value, list) {
-      return filterDict(value, { labelKey: 'domainName', valueKey: 'rowId' }, list)
+      return filterDict(
+        value,
+        { labelKey: "domainName", valueKey: "rowId" },
+        list
+      );
     },
     // 提交
     async submit() {
@@ -210,23 +320,23 @@ export default {
       //   atArea: this.form
       // };
       let res = await updateJobArea(this.form);
-      const {code, msg} = res;
-      if(code == 0) {
-        this.$message.success('修改地块面积成功');
+      const { code, msg } = res;
+      if (code == 0) {
+        this.$message.success("作业信息修改成功");
         this.$refs.form.resetFields();
         this.dialogVisible = false;
-        this.$emit('refreshData');
+        this.$emit("refreshData");
       } else {
-        this.$message.error(msg || '修改地块面积失败')
+        this.$message.error(msg || "作业信息修改失败");
       }
     },
     close() {
       // this.form = {};
       this.$refs.form.resetFields();
       this.dialogVisible = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -249,7 +359,7 @@ export default {
     opacity: 0.17;
   }
   .line {
-    width: 26px;
+    // width: 26px;
     text-align: center;
     color: #356e97;
     font-size: 12px;
@@ -260,7 +370,7 @@ export default {
     }
   }
   .el-col-5 {
-    width: 186px;
+    // width: 186px;
   }
 }
 </style>

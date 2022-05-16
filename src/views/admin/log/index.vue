@@ -77,7 +77,7 @@
         })
       },
       handleDel: function (row) {
-        this.$confirm('是否确认删除ID为"' + row.id + '"的日志?', '警告', {
+        this.$confirm('是否确认删除ID为"' + row.id + '"的日志?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

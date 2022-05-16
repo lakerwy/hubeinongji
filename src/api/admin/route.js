@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API
 
 export function fetchList(query) {
   return request({
-    url: '/admin/route',
+    url: `${baseUrl}admin/route`,
     method: 'get',
     params: query
   })
@@ -27,7 +28,7 @@ export function fetchList(query) {
 
 export function putObj(obj) {
   return request({
-    url: '/admin/route',
+    url: `${baseUrl}/admin/route`,
     method: 'put',
     data: obj
   })
@@ -35,7 +36,7 @@ export function putObj(obj) {
 
 export function refreshObj() {
   return request({
-    url: '/actuator/refresh',
+    url: `${baseUrl}/actuator/refresh`,
     method: 'post'
   })
 }

@@ -20,6 +20,7 @@
               :clearable="false"
               prefix-icon="el-icon-date"
               placeholder="开始时间"
+              :picker-options="startTime"
             ></el-date-picker>
             <span style="diaplay:inline-block;width:12px; color: #448dd5"> — </span>
             <el-date-picker
@@ -29,6 +30,7 @@
               :clearable="false"
               prefix-icon="el-icon-date"
               placeholder="结束时间"
+              :picker-options="endTime"
             ></el-date-picker>
           </el-form-item>
         </div>
@@ -39,13 +41,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="操作结果:">
-            <el-select v-model="form.operResult" placeholder="placeholder">
+            <el-select v-model="form.operResult" placeholder="请选择操作结果">
               <el-option v-for="item in resTypes" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <el-button type="primary" class="shadow-btn" plain round @click="searchChange"
+          <el-button type="primary" class="shadow-btn" plain round @click="searchChange" v-if="btnPermis.btnView"
             >查询</el-button>       
-          <div class="tableTool" @click="handleClick('export')">
+          <div class="tableTool" @click="handleClick('export')" v-if="btnPermis.btnExport">
             <img src="img/table_tool3.png" alt="" />
             <span>报表导出</span>
           </div>
@@ -54,7 +56,9 @@
       </div>
       <div class="my-table">
         <el-table
-          :data="tableData"
+          :data="tableData"      
+          v-loading="loading"
+          element-loading-background="rgba(0, 0, 0, 0.1)"
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectChange"
@@ -66,7 +70,7 @@
             fixed="left"
           >
           </el-table-column>
-          <el-table-column type="index" label="序号" width="120" fixed="left">
+          <el-table-column type="index" label="序号" width="120" fixed="left" :index="indexMethod">
           </el-table-column>
           <el-table-column
             v-for="item in columns"
@@ -81,7 +85,7 @@
       </div>
     </basic-container>
     <myPagination
-      style="margin-top: 32px"
+      style="margin-top: 22px"
       :currentPage="page.currentPage"
       :pageSize="form.row"
       :total="page.total"
@@ -94,7 +98,9 @@
 <script>
 import titleBox from "_com/contenBox/titleBox.vue";
 import myPagination from "_com/myPagination/index";
-import { selectOperlog } from '@/api/report/infoService.js'
+import { selectOperlog , exportOperlog} from '@/api/report/infoService.js'
+import { dateFormat, handBlobDown} from '@/util/util'
+import {mapGetters} from "vuex";
 
 export default {
   name: "department",
@@ -122,20 +128,42 @@ export default {
       ],
       tableData: [],
       selection: [], // 选择的数据
-      dialogVisible: false,
-      dialogTitle: "新增分组",
       form: {
         userName:"",
         operModule:"",
         operModule:"",
-        operEndTimeS:"",
+        operStartTimeS: new Date(
+          new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)
+        ),
+        operEndTimeS: new Date(
+          new Date(new Date().setMonth(11, 31)).setHours(23, 59, 59, 999)
+        ),
         bitName:"全部",
         operResult:"全部",
         page:1,
         row:10
       },
+      startTime:{
+        disabledDate: time => {
+          let endDateVal = this.form.operEndTimeS;
+          if(endDateVal) {
+            //小于结束时间
+            return time > new Date(endDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      endTime:{
+        disabledDate: time => {
+          let startDateVal = this.form.operStartTimeS;
+          if(startDateVal) {
+            return time < new Date(startDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
       optTypes: [
-        {label: '全部', value: '全部'},
+        {label: '全部', value: ""},
         {label: '修改', value: '修改'},
         {label: '删除', value: '删除'},
         {label: '增加', value: '增加'},
@@ -152,39 +180,99 @@ export default {
         {label: '面积审核', value: '面积审核'},
       ],
       resTypes: [
-        {label: '全部', value: '全部'},
+        {label: '全部', value: ""},
         {label: '执行成功', value: '执行成功'},
         {label: '执行失败', value: '执行失败'},
       ],
-      model: "",
-      showMaps: false,
-      editTitle: "",
-      echartType:true,
-
+      btnPermis: {  //按钮权限
+        btnView: true,
+        btnExport: true,
+      },
+      loading:false
     };
+  },
+  computed: {
+    ...mapGetters(['permissions','globalSetting'])
+  },
+  watch:{
+    'globalSetting.bTime':{
+        handler(newVal,oldVal){
+        this.form.operStartTimeS = newVal?newVal:this.form.operStartTimeS
+      },
+        immediate: true
+    },
+    'globalSetting.eTime':
+    { handler(newVal,oldVal){
+      this.form.operEndTimeS = newVal?newVal:this.form.operEndTimeS
+    },
+        immediate: true
+    }
   },
   created() {
     this.initData();
+    this.getBtnPermis();
   },
   methods: {
+    getBtnPermis() {
+      this.btnPermis.btnView = this.permissions[window.global.buttonPremission.operLogView];
+      this.btnPermis.btnExport = this.permissions[window.global.buttonPremission.operLogExport];
+      //console.log('this.btnPermis',this.btnPermis)
+      //console.log('this.permissions',this.permissions)
+    },
     async initData() {
+      this.loading = true
       let params = {
-        userName: this.form.username,
+        userName: this.form.userName,
         operModule: this.form.operModule,
-        operStartTimeS: this.form.operStartTimeS,
-        operEndTimeS: this.form.operEndTimeS,
+        operStartTimeS: dateFormat(this.form.operStartTimeS),
+        operEndTimeS: dateFormat(this.form.operEndTimeS),
         bitName: this.form.bitName,
         operResult: this.form.operResult,
-        filePath: this.form.filePath,
+        // filePath: this.form.filePath,
         page: this.page.currentPage,
-        rows: this.page.pageSize
+        rows: this.page.pageSize,
+        // bTimeEx: this.globalSetting.bTime,
+        // eTimeEx: this.globalSetting.eTime,
+        jobType:this.globalSetting.jobType,
       }
+      // debugger
       let res = await selectOperlog(params);
+      this.loading = false
       // const {code, data} = res;
-      // if(code == 0) {
-        this.tableData = res.rows;
-        this.page.total = res.total;
-      // }
+      if(!res.code) {
+        this.tableData = res.data.rows;
+        this.page.total = res.data.total;
+      }
+    },
+    async exportExcel(){
+      this.loading = true
+      let params = {
+        userName: this.form.userName,
+        operModule: this.form.operModule,
+        operStartTimeS: dateFormat(this.form.operStartTimeS),
+        operEndTimeS: dateFormat(this.form.operEndTimeS),
+        bitName: this.form.bitName,
+        operResult: this.form.operResult,
+        // filePath: this.form.filePath,
+        page: this.page.currentPage,
+        rows: this.page.pageSize,
+        // bTimeEx: this.globalSetting.bTime,
+        // eTimeEx: this.globalSetting.eTime,
+        jobType:this.globalSetting.jobType,
+      }
+      let res = await exportOperlog(params)
+      if(res.data.success) {
+        // let obj = encodeURI(res.data.obj)
+        // let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel?filePath='+obj;
+        // downloadPost(url)
+        let obj = res.data.obj;
+        let title = '操作日志报表.xls';
+        let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel';
+        handBlobDown(url,obj,title)
+      } else {
+        this.$message.error(res.data.msg || '导出失败')
+      }
+      this.loading = false
     },
     // 查询
     searchChange() {
@@ -218,9 +306,13 @@ export default {
       }
       return false;
     },
+    //导出
     handleClick() {
-      
-    }
+      this.exportExcel()
+    },
+    indexMethod(index) {
+      return (this.page.currentPage - 1) * this.page.pageSize + index + 1;
+    },
   },
   mounted() {
   },
@@ -252,11 +344,14 @@ export default {
         }
       }
     }
+    /deep/.el-card{
+      overflow: hidden;
+    }
   }
 
     .my-table {
       margin-top: 20px;
-      height: calc(100% - 81px);
+      height: calc(100% - 135px);
 
       /deep/ .el-table {
         height: calc(100% - 54px);

@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API;
 
 export function fetchPage(query) {
   return request({
-    url: '/admin/tenant/page',
+    url: `${baseUrl}admin/tenant/page`,
     method: 'get',
     params: query
   })
@@ -27,7 +28,7 @@ export function fetchPage(query) {
 
 export function fetchList(query) {
   return request({
-    url: '/admin/tenant/list',
+    url: `${baseUrl}admin/tenant/list`,
     method: 'get',
     params: query
   })
@@ -35,7 +36,7 @@ export function fetchList(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: `${baseUrl}admin/tenant`,
     method: 'post',
     data: obj
   })
@@ -43,21 +44,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: `${baseUrl}admin/tenant/` + id,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: `${baseUrl}admin/tenant/` + id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: `${baseUrl}admin/tenant`,
     method: 'put',
     data: obj
   })

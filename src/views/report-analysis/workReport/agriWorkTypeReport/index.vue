@@ -6,33 +6,34 @@
       <div class="searchline">
       <el-form class="my-form" label-position="right" label-width="85px" :model="form">
         <div class="formItem">
-          <el-form-item label="农机分组: ">
-            <el-select v-model="model" placeholder="">
-              <el-option>全部</el-option>
-            </el-select>
+          <el-form-item label="农机信息: ">
+            <el-input v-model="groupData.name" placeholder="请选择农机" @focus="open"></el-input>
           </el-form-item>
           <el-form-item class="item-data" label="起止时间: ">
             <el-date-picker
               class="datepicker"
-              v-model="form.queryStartTime"
+              v-model="form.bTimeEx"
               type="datetime"
               :clearable="false"
               prefix-icon="el-icon-date"
               placeholder="开始时间"
+              :picker-options="startTime"
             ></el-date-picker>
             <span style="diaplay:inline-block;width:12px; color: #448dd5"> — </span>
             <el-date-picker
               class="datepicker"
-              v-model="form.queryEndTime"
+              v-model="form.eTimeEx"
               type="datetime"
               :clearable="false"
               prefix-icon="el-icon-date"
               placeholder="结束时间"
+              :picker-options="endTime"
             ></el-date-picker>
           </el-form-item>
-                  <el-button type="primary" class="shadow-btn" plain round
-            >查询</el-button>               
-          <div class="tableTool" @click="handleClick('export')">
+          <el-button type="primary" class="shadow-btn" plain round @click="handleClick('search')" v-if="btnPermis.btnView">
+            查询
+          </el-button>
+          <div class="tableTool" @click="handleClick('export')" v-if="btnPermis.btnExport">
             <img src="img/table_tool3.png" alt="" />
             <span>报表导出</span>
           </div>
@@ -41,7 +42,9 @@
       </div>
       <div class="my-table">
         <el-table
-          :data="tableData"
+          :data="tableData"      
+          v-loading="loading"
+          element-loading-background="rgba(0, 0, 0, 0.1)"
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectChange"
@@ -53,7 +56,7 @@
             fixed="left"
           >
           </el-table-column>
-          <el-table-column type="index" label="序号" width="120" fixed="left">
+          <el-table-column type="index" label="序号" width="120" fixed="left" :index="indexMethod">
           </el-table-column>
           <el-table-column
             v-for="item in columns"
@@ -67,11 +70,12 @@
       </div>
     </basic-container>
     <myPagination
-      style="margin-top: 32px"
+      style="margin-top: 22px"
       :currentPage="page.currentPage"
       :pageSize="page.pageSize"
       :total="page.total"
       @current-change="currentChange"
+      @size-change="handleSizeChange"
     />
   </div>
 </template>
@@ -79,6 +83,9 @@
 <script>
 import titleBox from "_com/contenBox/titleBox.vue";
 import myPagination from "_com/myPagination/index";
+import { queryPersonJobTypes , exportPersonJobTypes} from "_api/report/work";
+import { mapGetters, mapMutations  } from 'vuex'
+import { dateFormat, handBlobDown} from '../../../../util/util'
 
 export default {
   name: "department",
@@ -93,69 +100,170 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 100,
+        total: 0,
       },
       columns: [
-        { prop: "sesonName", label: "村(组)名称" },
-        { prop: "groupName", label: "车主姓名" },
-        { prop: "type", label: "车主电话" },
-        { prop: "startTime", label: "作业车辆" },
-        { prop: "sesonName", label: "作业面积(亩)" },
-        { prop: "sesonName", label: "合格面积(亩)" },
-        { prop: "sesonName", label: "作业类型" },
-        { prop: "sesonName", label: "机具类型" },
-        { prop: "sesonName", label: "作业深度(公分) " },
+        { prop: "OWNER_NAME", label: "车手姓名" },
+        { prop: "OWNER_PHONE", label: "车主电话" },
+        { prop: "PLATE_NUMBER", label: "车牌号" },
+        { prop: "machineTypeName", label: "农机类型 " },
+        { prop: "toolTypeName", label: "机具类型 " },
+        { prop: "jobTypeName", label: "作业类型 " },
+        { prop: "COMPUTEAREA", label: "作业面积（亩）" },
       ],
-      tableData: [
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-        {
-          sesonName: "2021油菜直播",
-          groupName: "荆州市",
-          type: 11,
-          startTime: 123,
-          endTime: 33,
-        },
-      ],
+      tableData: [],
       selection: [], // 选择的数据
-      dialogVisible: false,
-      dialogTitle: "新增分组",
-      form: {},
-      model: "",
-      showMaps: false,
-      editTitle: "",
-      echartType:true,
-
+      form: {
+        bTimeEx: new Date(
+          new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)
+        ),
+        eTimeEx: new Date(
+          new Date(new Date().setMonth(11, 31)).setHours(23, 59, 59, 999)
+        ),
+      },
+      startTime:{
+        disabledDate: time => {
+          let endDateVal = this.form.eTimeEx;
+          if(endDateVal) {
+            //小于结束时间
+            return time > new Date(endDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      endTime:{
+        disabledDate: time => {
+          let startDateVal = this.form.bTimeEx;
+          if(startDateVal) {
+            return time < new Date(startDateVal);
+          }
+        },
+        cellClassName: () => {}
+      },
+      btnPermis: {  //按钮权限
+        btnView: true,
+        btnExport: true,
+      },
+      loading:false
     };
   },
+  computed: {
+    ...mapGetters(['groupData','permissions','globalSetting'])
+  },
+  watch:{
+    'globalSetting.bTime':{
+        handler(newVal,oldVal){
+        this.form.bTimeEx = newVal?newVal:this.form.bTimeEx
+      },
+        immediate: true
+    },
+    'globalSetting.eTime':
+    { handler(newVal,oldVal){
+      this.form.eTimeEx = newVal?newVal:this.form.eTimeEx
+    },
+        immediate: true
+    }
+  },
+  created() {
+      this.getBtnPermis()
+      this.setGroupBoxType(2);
+  },
   methods: {
-    initData() {},
-    // 查询
+    ...mapMutations({
+      setGroupBoxStatus: 'setGroupBoxStatus',
+      // setGroupCheckBox: 'setGroupCheckBox',
+      setGroupBoxType: 'setGroupBoxType',
+
+    }),
+    // 打开农机分组框
+    open() {
+      // this.setGroupCheckBox(true);
+      this.setGroupBoxStatus(true);
+    },
+    getBtnPermis() {
+      this.btnPermis.btnView = this.permissions[window.global.buttonPremission.agriWorkTypeReportView];
+      this.btnPermis.btnExport = this.permissions[window.global.buttonPremission.agriWorkTypeReportExport];
+      //console.log('this.btnPermis',this.btnPermis)
+      //console.log('this.permissions',this.permissions)
+    },
+    //查询数据
+    async initData() {
+      this.loading = true
+      let res = await queryPersonJobTypes({
+        page:this.page.currentPage,
+        rows:this.page.pageSize,
+        machineId: this.groupData.expand.toString() ,
+        bTimeEx: dateFormat(this.form.bTimeEx),
+        eTimeEx: dateFormat(this.form.eTimeEx),
+        jobType:this.globalSetting.jobType,
+
+      })
+      this.loading = false
+      if(!res.code){
+        this.tableData = res.data.rows;
+        this.page.total = res.data.total;
+      }
+    },
+    //报表导出
+    async exportExcel(){
+      this.loading = true
+      let res = await exportPersonJobTypes({
+        page:this.page.currentPage,
+        rows:this.page.pageSize,
+        machineId: this.groupData.expand.toString() ,
+        bTimeEx: dateFormat(this.form.bTimeEx),
+        eTimeEx: dateFormat(this.form.eTimeEx),
+        jobType:this.globalSetting.jobType,
+
+      })
+      if(res.data.success) {
+        // let obj = encodeURI(res.data.obj)
+        // let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel?filePath='+obj;
+        // downloadPost(url)
+        let obj = res.data.obj;
+        let title = '农机作业类型统计报表.xls';
+        let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel';
+        handBlobDown(url,obj,title)
+      } else {
+        this.$message.error(res.data.msg || '导出失败')
+      }
+      this.loading = false
+    } ,
     searchChange() {},
     // 选择事件
     handleSelectChange(selection) {
       this.selection = selection;
     },
-    currentChange() {},
+    currentChange(val) {
+      this.page.currentPage = val;
+      this.initData();
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val;
+      this.initData();
+    },
+    check() {
+      if (this.groupData.ids.length == 1) {
+        return true;
+      } else {
+        this.$message("请选择农机");
+      }
+      return false;
+    },
+    handleClick(param){
+      if(this.check()){
+        if(param === 'search'){
+          this.page.currentPage = 1;
+          this.initData()
+        }else if(param === 'export'){
+          this.exportExcel()
+        }
+      }
+    },
+    //处理序号问题
+    indexMethod(index) {
+      return (this.page.currentPage - 1) * this.page.pageSize + index + 1;
+    },
   },
   mounted() {
   },
@@ -173,9 +281,9 @@ export default {
         margin-right: 15px;
         margin-bottom: 10px;
         width: 305px;
-        /deep/ .el-form-item__label {
-          padding: 0;
-        }
+        // /deep/ .el-form-item__label {
+        //   padding: 0;
+        // }
         .el-input, .el-select {
           width: 215px;
         }
@@ -188,7 +296,7 @@ export default {
 
     .my-table {
       margin-top: 20px;
-      height: calc(100% - 81px);
+      height: calc(100% - 90px);
 
       /deep/ .el-table {
         height: calc(100% - 54px);

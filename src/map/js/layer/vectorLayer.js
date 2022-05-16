@@ -141,6 +141,13 @@ export function getStyles(options) {
   return getStyles_(options);
 }
 
+export function getStyles2(options) {
+  if (typeof options === "function") {
+    return getStyles_(options(feature, resolution));
+  }
+  return getStyles_(options);
+}
+
 /**
  * 根据数组或对象获取样式
  * @param {Style| Array<Style>} options

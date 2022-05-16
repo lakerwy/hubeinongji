@@ -61,13 +61,13 @@ export default {
           active: false,
           event: "choose",
         },
-        {
-          desc: "切换",
-          url: "icon-qh",
-          activeClass: "icon-qh",
-          active: false,
-          event: "change",
-        },
+        // {
+        //   desc: "切换",
+        //   url: "icon-qh",
+        //   activeClass: "icon-qh",
+        //   active: false,
+        //   event: "change",
+        // },
         {
           desc: "全屏",
           url: "icon-qp",
@@ -87,7 +87,7 @@ export default {
 </script>
 <style lang='less' scoped>
 .wrapper {
-  width: 435px;
+  // width: 435px;
 	height: 42px;
   padding: 0 25px;
 	background-color: #0b182d;
@@ -108,7 +108,7 @@ export default {
       // display: inline-block;
       width: 21px;
       height: 21px;
-      margin-right: 5px;
+      // margin-right: 5px;
       // outline: none;
     }
     .line {
@@ -135,9 +135,9 @@ export default {
     .icon-py {
       background: url("../../assets/images/map-drag.png") no-repeat center;
     }
-    .icon-qh {
-      background: url("../../assets/images/map-change.png") no-repeat center;
-    }
+    // .icon-qh {
+    //   background: url("../../assets/images/map-change.png") no-repeat center;
+    // }
     .icon-qp {
       background: url("../../assets/images/map-fullScreen.png") no-repeat center;
     }

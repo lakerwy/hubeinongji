@@ -9,9 +9,14 @@ const getters = {
   leftmenu: state => state.user.leftmenu,
   menuAll: state => state.user.menuAll,
   website: state => state.user.website,
-  settings: state => state.settings.settings,
+  globalSetting: state => state.settings.globalSetting,
   isShowGroupBox: state => state.settings.isShowGroupBox,
   isShowCheckBox: state => state.settings.isShowCheckBox,
+  groupTreeType:state => state.settings.groupTreeType,
+  //新的
+  groupTreeIsArea:state => state.settings.groupTreeIsArea,
+  groupTreeIsAll:state => state.settings.isAll,
   groupData: state => state.settings.groupData,
+  forcePassWordModify: state => state.user.forcePassWordModify,
 }
 export default getters

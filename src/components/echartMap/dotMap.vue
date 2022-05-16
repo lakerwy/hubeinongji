@@ -1,6 +1,6 @@
 <template>
   <div class="echarts">
-    <div style="width:100;height:100%" ref="dotMap"></div>
+    <div style="width:100%;height:100%" ref="dotMap"></div>
     <div class="mapChoose">
       <span v-for="(item,index) in parentInfo" :key="item.code">
         <span class="title" @click="chooseArea(item,index)">{{ item.cityName == '全国' ? '中国' : item.cityName }}</span>

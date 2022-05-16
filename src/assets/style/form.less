@@ -10,6 +10,7 @@
     height: 36px;
     color: #ffffff;
     padding: 0 9px;
+    // line-height: 1;
   }
   .el-form-item__content {
     line-height: 36px;
@@ -23,16 +24,16 @@
   /deep/ .el-input__placeholder {
     color: #80c5ff;
   }
-  /deep/input::-webkit-input-placeholder {
-    color: rgba(128, 197, 255, .3);
+  /deep/ input::-webkit-input-placeholder {
+    color: rgba(128, 197, 255, .3) !important;
   }
 
-  /deep/input::-moz-input-placeholder {
-    color: rgba(128, 197, 255, .3);
+  /deep/ input::-moz-input-placeholder {
+    color: rgba(128, 197, 255, .3) !important;
   }
 
-  /deep/input::-ms-input-placeholder {
-    color: rgba(128, 197, 255, .3);
+  /deep/ input::-ms-input-placeholder {
+    color: rgba(128, 197, 255, .3) !important;
   }
 
   .el-range-editor .el-range-input {
@@ -79,15 +80,25 @@
     background-color: rgba(0, 67, 124, .5);
     color: #fff;
   }
-  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected.hover {
-    background-color: rgba(0, 67, 124, .5);
+  /deep/ .is-multiple .el-select-dropdown__item.selected.hover {
+    background-color: rgba(0, 67, 124, .5) !important;
   }
-  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
-    background-color: rgba(0, 67, 124, .5);
+  /deep/ .is-multiple .el-select-dropdown__item.selected {
+    background-color: rgba(0, 67, 124, .5) !important;
   }
+
   .popper__arrow, .popper__arrow::after {
     display: none; // 小三角不显示
   }
+
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
+  background-color: rgba(0, 67, 124, .5);
+  color: #fff;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected.hover {
+  background-color: rgba(0, 67, 124, .5);
+  color: #fff;
 }
 
 // 日期组件面板样式
@@ -99,18 +110,18 @@
     background-color: transparent;
     border: solid 1px #356e97;
     height: 36px;
-    color: rgba(128, 197, 255,.3);
+    color: rgba(128, 197, 255,.3) !important;
     font-family: SourceHanSansCN-Regular;
     font-size: 14px;
   }
   input::-webkit-input-placeholder {
-    color: rgba(128, 197, 255,.3);
+    color: rgba(128, 197, 255,.3) !important;
   }
   input::-moz-input-placeholder {
-    color: rgba(128, 197, 255,.3);
+    color: rgba(128, 197, 255,.3) !important;
   }
   input::-ms-input-placeholder {
-    color: rgba(128, 197, 255,.3);
+    color: rgba(128, 197, 255,.3) !important;
   }
 
   .el-date-picker__header .el-date-picker__header-label,
@@ -176,4 +187,26 @@
   border-bottom-color: #1ebef4 !important;
   left: 50% !important;
   visibility: hidden;
+}
+
+//多项选择的选择标签样式
+.el-select {
+  /deep/ .el-tag{
+    background-color: #044f99;
+    border-color: #044f99;
+    color: #d6e4f2;
+  }
+
+  /deep/.el-select__tags {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /deep/ .el-tag__close{
+    color: #ffffff;
+  }
+
+  /deep/ .el-icon-close{
+    background: #0f2a55;
+  }
 }

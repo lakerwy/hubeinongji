@@ -351,13 +351,15 @@ function formatArea(map, polygon) {
   });
   let value = 0;
   let unit = "";
-  if (area > 10000) {
-    value = Math.round((area / 1000000) * 100) / 100;
-    unit = "k㎡";
-  } else {
-    value = Math.round(area * 100) / 100;
-    unit = "㎡";
-  }
+  // if (area > 10000) {
+  //   value = Math.round((area / 1000000) * 100) / 100;
+  //   value = area
+  //   unit = "k㎡";
+  // }
+  //  else {
+    value = Math.round(area * 0.15)/100; 
+    unit = "亩";
+  // }
   return { value, unit };
 }
 

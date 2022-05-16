@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">{{ headName }}</div>
     </div>
-    <section>
+    <section class="content">
       <slot />
     </section>
   </section>
@@ -27,8 +27,7 @@ export default {
 }
 .content-box {
   text-align: left;
-  width: 477px;
-  margin-bottom: 10px;
+  width: 100%;
   background: url("../../assets/images/kuang_bg.png");
   background-size: 100% 100%;
   .header {
@@ -43,6 +42,10 @@ export default {
       color: #FFFFFF;
       line-height: 44px;
     }
+  }
+  .content{
+    height: calc(100% - 44px);
+    overflow: scroll;
   }
 }
 </style>

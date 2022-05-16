@@ -16,80 +16,103 @@
  */
 
 import request from '@/request/index'
-import service from '@/request/index.js'
-const adminUrl = window.globalUrl.HOME_API+'admin/';
+
+const adminUrl = window.globalUrl.HOME_API + 'admin/';
 
 //获取用户列表
-export const getUserList = (params) => {
-  return service.get(`${adminUrl}/user/page`, {params})
-}
-//新增用户
-export const addUserList = (params) => {
-  return service.post(`${adminUrl}/admin/user`, params)
+export function fetchList(query) {
+    return request({
+        url: adminUrl + '/user/page',
+        method: 'get',
+        params: query
+    })
 }
 
-//修改用户
-export const editUserList = (params) => {
-  return service.post(`${adminUrl}/admin/user/editGroups`, params)
+//新增用户
+export function addObj(obj) {
+    return request({
+        url: adminUrl + '/user',
+        method: 'post',
+        data: obj
+    })
+}
+
+export function getObj(id) {
+    return request({
+        url: adminUrl + '/user/' + id,
+        method: 'get'
+    })
 }
 
 //删除用户
-export const delUser = (params) => {
-  return service.delete(`${adminUrl}/admin/user/delete/${params}`)
+export function delObj(id) {
+    return request({
+        url: adminUrl + '/user/delete/' + id,
+        method: 'delete'
+    })
 }
 
-
-export function fetchList(query) {
-  return request({
-    url: '/admin/user/page',
-    method: 'get',
-    params: query
-  })
+//修改用户
+export function putObj(obj) {
+    return request({
+        url: adminUrl + '/user/update',
+        method: 'put',
+        data: obj
+    })
 }
-
-export function addObj(obj) {
+//重置密码
+export function resetPwd(obj) {
   return request({
-    url: '/admin/user',
+    url: adminUrl + '/user/resetPwd',
     method: 'post',
     data: obj
   })
 }
-
-export function getObj(id) {
+//获取用户管理范围
+export function getGroups(obj) {
   return request({
-    url: '/admin/user/' + id,
+    url: adminUrl + '/user/getGroups/' + obj,
     method: 'get'
   })
 }
 
-export function delObj(id) {
+//更新用户管理范围
+export function updateGroups(obj) {
   return request({
-    url: '/admin/user/' + id,
-    method: 'delete'
-  })
-}
-
-export function putObj(obj) {
-  return request({
-    url: '/admin/user',
-    method: 'put',
-    data: obj
+    url: adminUrl + '/user/editGroups',
+    method: 'post',
+    data:obj
   })
 }
 
 export function getDetails(obj) {
-  return request({
-    url: '/admin/user/details/' + obj,
-    method: 'get'
-  })
+    return request({
+        url: adminUrl + '/user/details/' + obj,
+        method: 'get'
+    })
 }
 
 // 更改个人信息
 export function editInfo(obj) {
-  return request({
-    url: '/admin/user/edit',
-    method: 'put',
-    data: obj
-  })
+    return request({
+        url: adminUrl + '/user/edit',
+        method: 'put',
+        data: obj
+    })
+}
+// 更改个人信息
+export function fetchRoles(obj) {
+    return request({
+        url: adminUrl + '/user/roles/' + obj,
+        method: 'get',
+    })
 }
 
+//修改密码
+export function modifyPwd(obj) {
+    return request({
+        url: adminUrl + '/user/modifypwd',
+        method: 'post',
+        data:obj
+    })
+}

@@ -34,6 +34,7 @@ export default {
     box-shadow: none;
     width: 100%;
     height: 100%;
+    overflow: scroll;
     .el-card__body {
       padding: 0;
       height: 100%;

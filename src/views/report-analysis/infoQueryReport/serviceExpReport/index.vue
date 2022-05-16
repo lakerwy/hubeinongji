@@ -12,18 +12,18 @@
           :inline="true"
         >
           <el-form-item label="农机分组: ">
-            <el-input v-model="groupData.name" placeholder="请选择分组名称" @focus="open"></el-input>
+            <el-input v-model="groupData.name" placeholder="请选择农机分组" @focus="open"></el-input>
           </el-form-item>
           <el-form-item label="过期时间:">
             <el-select v-model="form.selectType" placeholder="请选择过期时间">
               <el-option v-for="item in types" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <el-button type="primary" class="shadow-btn" plain round @click="searchChange"
+          <el-button type="primary" class="shadow-btn" plain round @click="searchChange" v-if="btnPermis.btnView"
             >查询</el-button>          
-            <el-button type="primary" class="shadow-btn" plain round @click="updateTime"
+            <el-button type="primary" class="shadow-btn" plain round @click="updateTime" v-if="btnPermis.btnRenew"
             >续约</el-button>
-          <div class="tableTool" @click="handleClick('export')">
+          <div class="tableTool" @click="handleClick('export')" v-if="btnPermis.btnExport">
             <img src="img/table_tool3.png" alt="" />
             <span>报表导出</span>
           </div>
@@ -31,7 +31,9 @@
       </div>
       <div class="my-table">
         <el-table
-          :data="tableData"
+          :data="tableData"      
+          v-loading="loading"
+          element-loading-background="rgba(0, 0, 0, 0.1)"
           style="width: 100%"
           height="100%"
           @selection-change="handleSelectChange"
@@ -43,7 +45,7 @@
             fixed="left"
           >
           </el-table-column>
-          <el-table-column type="index" label="序号" width="120" fixed="left">
+          <el-table-column type="index" label="序号" width="120" fixed="left" :index="indexMethod">
           </el-table-column>
           <el-table-column
             v-for="item in columns"
@@ -58,7 +60,7 @@
       </div>
     </basic-container>
     <myPagination
-      style="margin-top: 32px"
+      style="margin-top: 22px"
       :currentPage="page.currentPage"
       :pageSize="page.pageSize"
       :total="page.total"
@@ -90,16 +92,16 @@ import titleBox from "_com/contenBox/titleBox.vue";
 import myPagination from "_com/myPagination/index";
 import { queryData, updateTime, excelOutPut } from '@/api/report/infoService.js';
 import { mapGetters, mapMutations  } from 'vuex'
-import { dateFormat } from '../../../../util/util'
-export default {
-  name: "department",
+import { dateFormat ,handBlobDown} from '../../../../util/util'
 
+export default {
   components: {
     titleBox,
     myPagination,
   },
   data() {
     return {
+      dialogVisible:false,
       searchForm: {},
       page: {
         currentPage: 1,
@@ -111,7 +113,7 @@ export default {
         { prop: "groupName", label: "农机分组", width: '480px', showTooltip: true },
         { prop: "driverName", label: "农机手姓名" },
         { prop: "driverPhone", label: "联系电话" },
-        { prop: "address", label: "机手地址", width: '350px' },
+        { prop: "address", label: "机手地址", width: '300px' },
         { prop: "serverOverTime", label: "服务到期时间" },
       ],
       tableData: [],
@@ -122,15 +124,7 @@ export default {
         {label: '月内过期', value: 4},
       ],
       selection: [], // 选择的数据
-      selectIds: [],
-      dialogVisible: false,
-      dialogTitle: "新增分组",
       form: {selectType: 1},
-      model: "",
-      showMaps: false,
-      editTitle: "",
-      echartType:true,
-      dialogVisible: false,
       pickerOptions: {
         disabledDate: (val) => {
           return val <= new Date()
@@ -140,39 +134,66 @@ export default {
         ETime: [
           {required: true, message: '请选择到期时间', trigger: 'change'}
         ]
-      }
+      },
+      btnPermis: {  //按钮权限
+        btnView: true,
+        btnRenew: true,
+        btnExport: true,
+      },
+      loading:false
     };
   },
   computed: {
-    ...mapGetters(['groupData'])
+    ...mapGetters(['groupData','permissions',"globalSetting"])
   },
   created() {
-    
+    this.setGroupBoxType(1);
+    this.getBtnPermis();
+    //this.setGroupTree(1)
   },
+  
   methods: {
     ...mapMutations({
       setGroupBoxStatus: 'setGroupBoxStatus',
       // setGroupCheckBox: 'setGroupCheckBox'
+      setGroupBoxType: "setGroupBoxType",
+
     }),
     // 打开农机分组框
     open() {
-      // this.setGroupCheckBox(true);
       this.setGroupBoxStatus(true);
     },
+    getBtnPermis() {
+      this.btnPermis.btnView = this.permissions[window.global.buttonPremission.serviceOverView];
+      this.btnPermis.btnRenew = this.permissions[window.global.buttonPremission.serviceOverRenew];
+      this.btnPermis.btnExport = this.permissions[window.global.buttonPremission.serviceOverView];
+      //console.log('this.btnPermis',this.btnPermis)
+      //console.log('this.permissions',this.permissions)
+    },
     async initData() {
+      this.loading = true
       let params = {
-        groupid: this.groupData.ids.join(','),
+        groupId: this.groupData.ids.toString(),
         selectType: this.form.selectType,
-        page: this.page.currentPage,
-        rows: this.page.pageSize
+        page:{
+          page: this.page.currentPage,
+          rows: this.page.pageSize,
+        },
+        bTimeEx: this.globalSetting.bTime,
+        eTimeEx: this.globalSetting.eTime,
+        jobType:this.globalSetting.jobType,
+
       }
       let res = await queryData(params);
+      this.loading = false
       // const {code, data} = res;
-      // if(code == 0) {
-        this.tableData = res.rows;
-        this.page.total = res.total;
-      // }
+      if(!res.code) {
+        this.tableData = res.data.rows;
+        this.page.total = res.data.total;
+      }
     },
+
+    
     // 查询
     searchChange() {
       if(this.groupData.ids.length <= 0) {
@@ -231,10 +252,11 @@ export default {
               rowIds: this.selectIds.join(','),
               time: dateFormat(this.form.ETime)
             }
-            let res = await updateTime(params, new Date().getTime())
+            let res = await updateTime(params)
             const {success, msg} = res;
             if(success) {
               this.$message.success('续约成功');
+              this.dialogVisible = false
               this.initData();
             } else {
               this.$message.error(msg || '续约失败')
@@ -250,23 +272,42 @@ export default {
       this.dialogVisible = false;
       this.$refs.form.resetFields();
     },
+    //导出
     async handleClick() {
+      this.loading = true
       if(this.groupData.ids.length <= 0) {
         this.$message.info('请先选择分组');
         return;
       }
       let params = {
-        groupid: this.groupData.ids.join(','),
-        selecttype1: this.form.selectType
+        groupId: this.groupData.ids.join(','),
+        selectType: this.form.selectType,
+        page:{
+          page: this.page.currentPage,
+          rows: this.page.pageSize
+        },
+        bTimeEx: this.globalSetting.bTime,
+        eTimeEx: this.globalSetting.eTime,
+        jobType:this.globalSetting.jobType,
       }
       let res = await excelOutPut(params);
-      const {success, msg} = res;
-      if(success) {
-
+      // const {success, obj , msg} = res;
+      if(res.data.success) {
+        // let obj = encodeURI(res.data.obj)
+        // let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel?filePath='+obj;
+        // downloadPost(url)
+        let obj = res.data.obj;
+        let title = '服务到期报表.xls';
+        let url = window.globalUrl.HOME_API + 'agri-web/rp/statistics/downloadExcel';
+        handBlobDown(url,obj,title)
       } else {
-        this.$message.error(msg || '导出失败')
+        this.$message.error(res.data.msg || '导出失败')
       }
-    }
+      this.loading = false
+    },
+    indexMethod(index) {
+      return (this.page.currentPage - 1) * this.page.pageSize + index + 1;
+    },
   },
   mounted() {
   },

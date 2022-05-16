@@ -9,7 +9,7 @@
     <LeftTab @itemHandleClick="itemHandleClick"/>
     <RightTab v-if="showRightTab"/>
     <CenterTab class="CenterTab"/>
-    <Footer class="map-footer" />
+    <!-- <Footer class="map-footer" /> -->
   </div>
 </template>
 
@@ -81,7 +81,7 @@ export default {
       this.mapDis.$set(this.mapDis.vectorDataSource, 'farm', item)
     },
     itemHandleClick(item) {
-      console.log(item)
+      //console.log(item)
       this.showRightTab = true;
     },
     handleClick(feature) {
@@ -93,12 +93,18 @@ export default {
 
 }
 </script>
+
 <style scoped lang="less">
 .CenterTab {
   position: absolute;
   top: 10px;
-  left: calc(50% - 425px);
+  // left: calc(50% - 425px);
+  left: 50%;
+  transform: translate(-50%,0);
 }
+// @media screen and(max-width:) {
+  
+// }
 
 .map-con {
   width: 100%;
@@ -109,7 +115,7 @@ export default {
   bottom: 0;
   height: calc(100% - 79px);
   width: 100vw;
-  background: url("../../assets/images/mapBg_蒙版.png") no-repeat;
+  background: url("../../assets/images/mapBg_mb.png") no-repeat;
   background-size: 100% 100%;
   pointer-events: none;
 }

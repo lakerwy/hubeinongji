@@ -16,19 +16,20 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API
 
 
 
 export function roleList() {
   return request({
-    url: '/admin/role/roleList',
+    url: `${baseUrl}admin/role/list`,
     method: 'get'
   })
 }
 
 export function fetchList(query) {
   return request({
-    url: '/admin/role/page',
+    url: `${baseUrl}admin/role/page`,
     method: 'get',
     params: query
   })
@@ -36,21 +37,21 @@ export function fetchList(query) {
 
 export function deptRoleList() {
   return request({
-    url: '/admin/role/list',
+    url: `${baseUrl}admin/role/list`,
     method: 'get'
   })
 }
 
 export function getObj(id) {
   return request({
-    url: '/admin/role/' + id,
+    url: `${baseUrl}admin/role/` + id,
     method: 'get'
   })
 }
 
 export function addObj(obj) {
   return request({
-    url: '/admin/role',
+    url: `${baseUrl}admin/role`,
     method: 'post',
     data: obj
   })
@@ -58,7 +59,7 @@ export function addObj(obj) {
 
 export function putObj(obj) {
   return request({
-    url: '/admin/role',
+    url: `${baseUrl}admin/role`,
     method: 'put',
     data: obj
   })
@@ -66,14 +67,14 @@ export function putObj(obj) {
 
 export function delObj(id) {
   return request({
-    url: '/admin/role/' + id,
+    url: `${baseUrl}admin/role/` + id,
     method: 'delete'
   })
 }
 
 export function permissionUpd(roleId, menuIds) {
   return request({
-    url: '/admin/role/menu',
+    url: `${baseUrl}admin/role/menu`,
     method: 'put',
     data: {
       roleId: roleId,
@@ -84,7 +85,7 @@ export function permissionUpd(roleId, menuIds) {
 
 export function fetchRoleTree(roleId) {
   return request({
-    url: '/admin/menu/tree/' + roleId,
+    url: `${baseUrl}admin/menu/tree/` + roleId,
     method: 'get'
   })
 }

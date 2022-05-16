@@ -42,7 +42,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .right_tab_container {
   position: absolute;
   height: 395px;

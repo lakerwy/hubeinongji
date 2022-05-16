@@ -16,57 +16,66 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API;
 
 export function getMenu(id) {
-  return request({
-    url: '/admin/menu',
-    params: {parentId: id},
-    method: 'get'
-  })
+    return request({
+        url: `${baseUrl}admin/menu`,
+        params: {parentId: id},
+        method: 'get'
+    })
 }
 
 export function getTopMenu() {
-  return request({
-    url: '/admin/menu',
-    params: {type: 'top'},
-    method: 'get'
-  })
+    return request({
+        url: `${baseUrl}admin/menu`,
+        params: {type: "0"},
+        method: 'get'
+    })
+}
+
+export function getLeftMenu(id) {
+    return request({
+        url: `${baseUrl}admin/menu`,
+        params: {parentId: id, type: "2"},
+        method: 'get'
+    })
 }
 
 export function fetchMenuTree(lazy, parentId) {
-  return request({
-    url: '/admin/menu/tree',
-    method: 'get',
-    params: {lazy: lazy, parentId: parentId}
-  })
+    return request({
+        url: `${baseUrl}admin/menu/tree`,
+        method: 'get',
+        params: {lazy: lazy, parentId: parentId}
+    })
 }
 
 export function addObj(obj) {
-  return request({
-    url: '/admin/menu',
-    method: 'post',
-    data: obj
-  })
+    return request({
+        url: `${baseUrl}admin/menu`,
+        method: 'post',
+        data: obj
+    })
 }
 
 export function getObj(id) {
-  return request({
-    url: '/admin/menu/' + id,
-    method: 'get'
-  })
+    return request({
+        url: `${baseUrl}admin/menu/` + id,
+        method: 'get'
+    })
 }
 
 export function delObj(id) {
-  return request({
-    url: '/admin/menu/' + id,
-    method: 'delete'
-  })
+    return request({
+        url: `${baseUrl}admin/menu/` + id,
+        method: 'delete'
+    })
 }
 
 export function putObj(obj) {
-  return request({
-    url: '/admin/menu',
-    method: 'put',
-    data: obj
-  })
+    return request({
+        url: `${baseUrl}admin/menu`,
+        method: 'put',
+        data: obj
+    })
 }

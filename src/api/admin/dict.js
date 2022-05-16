@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API;
 
 export function fetchList(query) {
   return request({
-    url: '/admin/dict/queryDictPage',
+    url: `${baseUrl}admin/dict/queryDictPage`, 
     method: 'get',
     params: query
   })
@@ -27,7 +28,7 @@ export function fetchList(query) {
 
 export function fetchItemList(query) {
   return request({
-    url: '/admin/dict/item/queryDictItemPage',
+    url: `${baseUrl}admin/dict/item/queryDictItemPage`,
     method: 'get',
     params: query
   })
@@ -36,7 +37,7 @@ export function fetchItemList(query) {
 
 export function updateItemList(obj) {
   return request({
-    url: '/admin/dict/updateDictItem',
+    url: `${baseUrl}admin/dict/updateDictItem`,
     method: 'post',
     data: obj
   })
@@ -44,7 +45,7 @@ export function updateItemList(obj) {
 
 export function delItemObj(id) {
   return request({
-    url: '/admin/dict/deleteDictItem/' + id,
+    url: `${baseUrl}admin/dict/deleteDictItem/` + id,
     method: 'delete'
   })
 }
@@ -52,7 +53,7 @@ export function delItemObj(id) {
 
 export function addItemObj(obj) {
   return request({
-    url: '/admin/dict/item',
+    url: `${baseUrl}admin/dict/item`,
     method: 'post',
     data: obj
   })
@@ -60,7 +61,7 @@ export function addItemObj(obj) {
 
 export function getItemObj(id) {
   return request({
-    url: '/admin/dict/item/' + id,
+    url: `${baseUrl}admin/dict/item/` + id,
     method: 'get'
   })
 }
@@ -69,7 +70,7 @@ export function getItemObj(id) {
 
 export function putItemObj(obj) {
   return request({
-    url: '/admin/dict/item',
+    url: `${baseUrl}admin/dict/item`,
     method: 'put',
     data: obj
   })
@@ -77,7 +78,7 @@ export function putItemObj(obj) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/dict/',
+    url: `${baseUrl}admin/dict/`,
     method: 'post',
     data: obj
   })
@@ -85,21 +86,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/dict/' + id,
+    url: `${baseUrl}admin/dict/` + id,
     method: 'get'
   })
 }
 
 export function deleteDicts(types) {
   return request({
-    url: '/admin/dict/deleteDicts/'+types,
+    url: `${baseUrl}admin/dict/deleteDicts/`+types,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/dict/',
+    url: `${baseUrl}admin/dict/`,
     method: 'put',
     data: obj
   })
@@ -107,7 +108,7 @@ export function putObj(obj) {
 
 export function remote(type) {
   return request({
-    url: '/admin/dict/type/' + type,
+    url: `${baseUrl}admin/dict/type/` + type,
     method: 'get'
   })
 }

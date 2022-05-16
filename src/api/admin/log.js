@@ -16,10 +16,11 @@
  */
 
 import request from '@/request/index'
+const baseUrl = window.globalUrl.HOME_API
 
 export function fetchList(query) {
   return request({
-    url: '/admin/log/page',
+    url: `${baseUrl}admin/log/page`,
     method: 'get',
     params: query
   })
@@ -27,14 +28,14 @@ export function fetchList(query) {
 
 export function delObj(id) {
   return request({
-    url: '/admin/log/' + id,
+    url: `${baseUrl}admin/log/` + id,
     method: 'delete'
   })
 }
 
 export function addObj(obj) {
   return request({
-    url: '/admin/log/',
+    url: `${baseUrl}admin/log/`,
     method: 'post',
     data: obj
   })
@@ -42,14 +43,14 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/log/' + id,
+    url: `${baseUrl}admin/log/` + id,
     method: 'get'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/log/',
+    url: `${baseUrl}admin/log/`,
     method: 'put',
     data: obj
   })
@@ -57,7 +58,7 @@ export function putObj(obj) {
 
 export function sendLogs(logsList) {
   return request({
-    url: '/admin/log/logs',
+    url: `${baseUrl}admin/log/logs`,
     method: 'post',
     data: logsList
   })

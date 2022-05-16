@@ -6,13 +6,14 @@
  * @ Description: 轨迹对象，用于线的历史轨迹播放
  */
 
-import DxVectorLayer, { getStyles } from "../layer/vectorLayer";
+import DxVectorLayer, {getStyles} from "../layer/vectorLayer";
 import GeoJSONSource from "../source/geojson";
 import olMap from "ol/Map";
 import Feature from "ol/Feature";
-import { createDefaultStyle } from "ol/style//Style";
-import { Point, LineString, MultiLineString } from "ol/geom";
-import { Style, Stroke, Icon } from "ol/style";
+import olPixel from 'ol/pixel';
+import {createDefaultStyle} from "ol/style//Style";
+import {Point, LineString, MultiLineString} from "ol/geom";
+import {Style, Stroke, Icon} from "ol/style";
 
 import StartIcon from "../../assets/img/起点icon.png";
 import EndIcon from "../../assets/img/终点icon.png";
@@ -143,11 +144,12 @@ class LineTrack {
    */
   setShowNode(value) {
     this.showNode = value;
-    if (this.showNode) {
-      this.showNodeOnMap();
-    } else {
-      this.hideNodeOnMap();
-    }
+    /* if (this.showNode) {
+       this.showNodeOnMap();
+     } else {
+       this.hideNodeOnMap();
+     }*/
+    this.showNodeOnMap(value)
   }
 
   /**
@@ -180,6 +182,18 @@ class LineTrack {
         coordinates: this.coordinates[0],
         id: "track_move_point",
         pointType: "move"
+      },
+      {
+        type: "Point",
+        coordinates: this.coordinates[0],
+        id: "track_start_point",
+        pointType: "start"
+      },
+      {
+        type: "Point",
+        coordinates: this.coordinates[this.coordinates.length-1],
+        id: "track_end_point",
+        pointType: "end"
       }
     ]);
 
@@ -194,13 +208,17 @@ class LineTrack {
       } else if (pointType === "start") {
         return getStyles({
           icon: {
-            src: StartIcon
+            src: StartIcon,
+            anchor:[0.5,1],
+            //anchorOrigin:"bottom-left"
           }
         });
       } else if (pointType === "end") {
         return getStyles({
           icon: {
-            src: EndIcon
+            src: EndIcon,
+            anchor:[0.5,1],
+            //anchorOrigin:"bottom-left"
           }
         });
       }
@@ -216,9 +234,8 @@ class LineTrack {
       this.movePointFeature.setStyle(style);
     }
 
-    this.showNodeOnMap();
-
-    this.showStartAndEndOnMap();
+    //this.addNodeOnMap();
+    //this.showStartAndEndOnMap();
   }
 
   showStartAndEndOnMap() {
@@ -258,8 +275,8 @@ class LineTrack {
     });
   }
 
-  showNodeOnMap() {
-    if (!this.showNode || !this.pointLayer) {
+  addNodeOnMap() {
+    if (!this.pointLayer) {
       return;
     }
     let source = this.pointLayer.getSource();
@@ -274,18 +291,25 @@ class LineTrack {
     source.addByList(list);
   }
 
-  hideNodeOnMap() {
-    if (this.showNode || !this.pointLayer) {
-      return;
+  showNodeOnMap(visible) {
+    if (this.pointLayer) {
+      this.pointLayer.setVisible(visible);
     }
-    let source = this.pointLayer.getSource();
-    source.forEachFeature(f => {
-      let pointType = f.get("pointType");
-      if (pointType === "node") {
-        source.removeFeature(f);
-      }
-    });
   }
+
+  /* hideNodeOnMap() {
+     if (this.showNode || !this.pointLayer) {
+       return;
+     }
+     this.pointLayer
+     /!*let source = this.pointLayer.getSource();
+     source.forEachFeature(f => {
+       let pointType = f.get("pointType");
+       if (pointType === "node") {
+         source.removeFeature(f);
+       }
+     });*!/
+   }*/
 
   start() {
     if (!this.pointLayer) {
@@ -303,7 +327,7 @@ class LineTrack {
     const time = event.frameState.time;
     const elapsedTime = time - this.lastTime;
     let flag = this.distance < 1 ? false : true;
-    this.distance = (this.distance + (10 * this.speed * elapsedTime) / 1e6) % 2;
+    this.distance = (this.distance + (2 * this.speed * elapsedTime) / 1e6) % 2;
     flag = this.distance < 1 ? false : true;
     this.lastTime = time;
 
@@ -315,8 +339,9 @@ class LineTrack {
     const currentCoordinate = this.feature
       .getGeometry()
       .getCoordinateAt(this.distance);
-    this.movePointFeature.setGeometry(new Point(currentCoordinate));
-
+    if (this.movePointFeature) {
+      this.movePointFeature.setGeometry(new Point(currentCoordinate));
+    }
     // 计算移动方向
     let rotation = computeMoveRotation(this.feature, this.distance);
     if (rotation) {
@@ -326,14 +351,23 @@ class LineTrack {
         image && image.setRotation(-rotation);
       }
     }
+    //获取现有坐标的屏幕坐标，判断是否在屏幕边缘，如果在屏幕边缘，就改变视图范围
+    var pixel = this.map.getPixelFromCoordinate(currentCoordinate)
+    var size = this.map.getSize();
 
-    if (this.isTrack) {
-      this.map.getView().setCenter(currentCoordinate);
+    //console.log("pixel", pixel, "size", size);
+
+    if (pixel && size) {
+      if (Math.abs(pixel[0] - size[0]) < 200 || Math.abs(pixel[1] - size[1]) < 300 || pixel[0] < 200 || pixel[1] < 200) {
+        this.map.getView().setCenter(currentCoordinate);
+        this.map.render();
+      }
     }
-
-    this.callback && this.callback({ percent: this.distance });
-
-    this.map.render();
+    /* if (this.isTrack) {
+       this.map.getView().setCenter(currentCoordinate);
+     }*/
+    this.callback && this.callback({percent: this.distance});
+    //
   }
 
   pause() {
@@ -355,7 +389,7 @@ class LineTrack {
       this.map.getView().setCenter(lastCoordinate);
     }
 
-    this.callback && this.callback({ percent: 1 });
+    this.callback && this.callback({percent: 1});
   }
 
   destroy() {

@@ -1,38 +1,38 @@
 <template>
-<el-dialog
-      class="dialog"
-      :title="'农机变更查询'"
-      :visible.sync="dialogVisible"
-      :width="'1000px'"
-      top="20vh"
-    >
+  <el-dialog
+    class="dialog"
+    :title="'农机变更查询'"
+    :visible.sync="dialogVisible"
+    :width="'1000px'"
+    top="20vh"
+  >
     <div>
       <div class="ChangeQuery">
-    <el-table :data="tableData" style="width: auto" :height="358">
-      <el-table-column type="index" width="94px">
-        <template slot-scope="scope">
-          <div class="id-container">{{scope.$index+1}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="changeTime" label="更换时间" width="215px">
-        <template slot-scope="scope">
-          <div class="time-container">{{scope.row.changeTime}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="changeDesc" label="更换描述" width="595px">
-        <template slot-scope="scope">
-          <div class="time-container">{{scope.row.changeDesc}}</div>
-        </template>
-      </el-table-column>
-    </el-table>
-      <myPagination
-        :currentPage="page.currentPage"
-        :pageSize="page.pageSize"
-        :total="page.total"
-      />
+        <el-table :data="tableData" style="width: auto" :height="358">
+          <el-table-column type="index" width="94px">
+            <template slot-scope="scope">
+              <div class="id-container">{{ scope.$index + 1 }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="changeTime" label="变更时间" width="215px">
+            <template slot-scope="scope">
+              <div class="time-container">{{ scope.row.changeTime }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="changeDesc" label="变更描述" width="595px">
+            <template slot-scope="scope">
+              <div class="time-container">{{ scope.row.changeDesc }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <myPagination
+          :currentPage="page.currentPage"
+          :pageSize="page.pageSize"
+          :total="page.total"
+        />
       </div>
     </div>
-    </el-dialog>
+  </el-dialog>
 </template>
 
 <script>
@@ -40,10 +40,10 @@ import myPagination from '_com/myPagination/index';
 import {getMachineHistroy} from "../../../../api/basic/machine";
 
 export default {
-  components:{
+  components: {
     myPagination
   },
-  props:['selectId'],
+  props: ['selectId'],
   data() {
     return {
       dialogVisible: false,
@@ -58,29 +58,38 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 100,
+        total: 0,
       },
     };
   },
   watch: {
-    "selectId": {
-      handler(newName, oldName) {
-        console.log(newName);
-        if(newName){
-          this.getMachineHistroy(this.page,newName);
+    // "selectId": {
+    //   handler(newName, oldName) {
+    //     //console.log(newName);
+    //     if (newName) {
+    //       this.getMachineHistroy(this.page, newName);
+    //     }
+    //   },
+    //   immediate: true
+    // }
+      dialogVisible: {
+      handler(newVal, oldVal) {
+        //console.log(newName);
+        if (newVal) {
+          this.getMachineHistroy(this.page, this.selectId);
         }
       },
       immediate: true
     }
   },
   methods: {
-    async getMachineHistroy(page,id){
-      let res= await getMachineHistroy({
+    async getMachineHistroy(page, id) {
+      let res = await getMachineHistroy({
         page: page.currentPage,
         limit: page.pageSize,
         machineId: id,
       });
-      if(!res.code){
+      if (!res.code) {
         this.tableData = res.data.list;
         this.page.total = res.data.totalCount;
       }
@@ -91,7 +100,7 @@ export default {
 
 <style lang="less" scoped>
 .ChangeQuery {
-  /deep/.el-table {
+  /deep/ .el-table {
     background-color: transparent;
     border: none;
     padding-top: 35px;
@@ -102,7 +111,8 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      .id-container{
+
+      .id-container {
         font-size: 14px;
         background-color: #022f5a;
         color: #aac2d6;
@@ -111,46 +121,54 @@ export default {
         border-radius: 10px;
         text-align: center;
       }
-      .time-container{
+
+      .time-container {
         color: #aac2d6;
       }
     }
+
     td,
     tr,
     th.is-leaf {
       background-color: transparent;
       border: none;
     }
+
     td.gutter,
     th.gutter {
       background-color: transparent;
     }
+
     thead {
       background-color: #022f5a;
       color: #67c8ff;
     }
+
     .el-table--enable-row-hover,
     .el-table__body tr:hover > td {
       background-color: #022f5a;
     }
 
-    /deep/.el-table--border {
+    /deep/ .el-table--border {
       border: none;
     }
+
     .el-table--border::after,
     .el-table--group::after {
       width: 0;
     }
   }
-      /deep/.el-pagination {
-        padding-left: 16px;
-        color: #aac2d6;
-        margin-top: 35px;
-        padding-bottom: 25px;
-      }
+
+  /deep/ .el-pagination {
+    padding-left: 16px;
+    color: #aac2d6;
+    margin-top: 35px;
+    padding-bottom: 25px;
+  }
 }
-    /deep/.el-table::before {
-      width: 0;
-      height: 0;
-    }
+
+/deep/ .el-table::before {
+  width: 0;
+  height: 0;
+}
 </style>

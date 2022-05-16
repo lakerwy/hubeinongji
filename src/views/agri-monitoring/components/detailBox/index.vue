@@ -24,16 +24,13 @@
             <span>{{detail.jobType}}</span>
           </el-form-item>
           <el-form-item>
-            <img class="form-icon" src="img/monitoring/carType.png" alt="">
+            <img class="form-icon" src="img/monitoring/carLocation.png" alt="">
             <span>{{detail.groupNameFullPath}}</span>
           </el-form-item>
           <el-form-item>
             <img class="form-icon" src="img/monitoring/carUser.png" alt="">
-            <span>{{detail.ownerName}}-{{detail.ownerPhone || '暂无'}}</span>
-          </el-form-item>
-          <el-form-item>
-            <img class="form-icon" src="img/monitoring/carLocation.png" alt="">
-            <span>{{detail.location}}</span>
+            <span>{{detail.ownerName}}</span>
+<!--            <span>{{detail.ownerName}}-{{detail.ownerPhone || '暂无'}}</span>-->
           </el-form-item>
           <el-form-item>
             <img class="form-icon" src="img/monitoring/carDate.png" alt="">
@@ -60,9 +57,11 @@
         </div>
       </div>
       <div class="btns">
-        <el-button type="primary" class="primary-btn" round @click="showHistoryTrack">历史轨迹</el-button>
-        <el-button round type="primary" class="primary-btn-plain" plain @click="goRealtimeMonitoring">实时监控</el-button>
-        <el-button round type="primary" class="primary-btn-plain" plain @click="goWorkingManagement">作业查询</el-button>
+        <!-- <el-button type="primary" class="primary-btn" round @click="showHistoryTrack" v-if="btnPermis.btnHistory">历史轨迹</el-button> -->
+        <el-button type="primary" class="primary-btn-plain" round @click="showHistoryTrack" v-if="btnPermis.btnHistory">历史轨迹</el-button>
+       <!-- <el-button round type="primary" class="primary-btn-plain" plain @click="goRealtimeMonitoring" v-if="btnPermis.btnRealtime && detail.additional === '在线' ">实时监控</el-button>-->
+        <el-button round type="primary" class="primary-btn-plain" plain @click="goRealtimeMonitoring" v-if="btnPermis.btnRealtime  ">实时监控</el-button>
+        <el-button round type="primary" class="primary-btn-plain" plain @click="goWorkingManagement" v-if="btnPermis.btnWorkView">作业查询</el-button>
       </div>
     </el-card>
   </div>
@@ -70,11 +69,12 @@
 
 <script>
 import { getDetailByMachinId } from '@/api/monitoring/index'
+import {mapGetters} from "vuex";
 export default {
   props: {
     data: {
       type: Object,
-      default: {}
+      default: ()=>{}
     }
   },
   watch: {
@@ -88,10 +88,27 @@ export default {
   },
   data() {
     return {
-      detail: {}
+      detail: {},
+      btnPermis: {  //按钮权限
+        btnHistory: false,
+        btnRealtime: false,
+        btnWorkView: false,
+      }
     }
   },
+  computed: {
+    ...mapGetters(['permissions'])
+  },
+  created() {
+    this.getBtnPermis();
+  },
   methods: {
+    getBtnPermis(){
+      this.btnPermis.btnHistory = this.permissions[window.global.buttonPremission.monitorHistory];
+      this.btnPermis.btnRealtime = this.permissions[window.global.buttonPremission.monitorRealtime];
+      this.btnPermis.btnWorkView = this.permissions[window.global.buttonPremission.monitorWorkView];
+      //console.log('this.permissions',this.permissions)
+    },
     // 查询详情数据
     async initData() {
       let params = {
@@ -106,18 +123,24 @@ export default {
     // 历史轨迹
     showHistoryTrack() {
       this.$emit('showTrack', 'isShowTrack', true);
+
+      // pbw修改
+      this.$emit("Emitdata",this.detail);
     },
     // 实时监控
     goRealtimeMonitoring() {
       // 保存当前操作的农机数据
       sessionStorage.setItem('currentCar', JSON.stringify(this.data));
-      this.$router.push({path: '/realtime-monitoring'})
+      // this.$router.push({path: '/agri-monitoring/realtime-monitoring/index'})
+      this.$emit("showAgriMonitoring","isShowAgriMonitoring",true);
     },
     // 作业查询
     goWorkingManagement() {
       // 保存当前操作的农机数据
       sessionStorage.setItem('currentCar', JSON.stringify(this.data));
-      this.$router.push({path: '/working-management'})
+      //console.log("作业查询 detail:",this.detail);
+      //console.log("作业查询 data:",this.data);
+      this.$router.push({path: '/working-management', query: { data: encodeURIComponent(JSON.stringify(this.data)), machineId:this.detail.machineId },})
     },
     // 关闭组件
     close() {
@@ -151,6 +174,7 @@ export default {
         font-size: 14px;
         border-radius: 4px;
       }
+
       .online {
         color: #07d9ae !important;
         border: solid 1px rgba(10, 181, 147,.3) !important;
@@ -203,10 +227,21 @@ export default {
       width: 84px;
       padding: 0;
       height: 32px;
+      cursor: pointer;
+    }
+    .el-button:hover {
+      width: 84px;
+      padding: 0;
+      height: 32px;
+      cursor: pointer;
     }
     .primary-btn-plain {
       border: solid 1px #194260 !important;
       color: #80c5ff !important;
+    }
+    .primary-btn-plain:hover{
+      background-color: rgb(20,76,236) !important;
+      color: white !important;
     }
   }
 }

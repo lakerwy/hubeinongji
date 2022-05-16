@@ -103,7 +103,9 @@
       <myPagination
         :currentPage="currentPage"
         :pageSize="pageSize"
-        :total="total"/>
+        :total="total"
+        Layout="sizes, prev, slot, next, ->, total"
+        />
     </div>
   </div>
 </template>
@@ -144,7 +146,7 @@ export default {
       ],
       currentPage: 1,
       pageSize: 10,
-      total: 0
+      total: 4,
     }
   },
   methods: {
@@ -158,7 +160,8 @@ export default {
 <style lang='less' scoped>
 .right-tab-container {
   width: 375px;
-  height: 800px;
+  // height: 800px;
+  height: calc(100% - 10px);
   background-color: rgba(4, 18, 44, 0.9);
   position: absolute;
   top: 10px;
@@ -282,7 +285,8 @@ export default {
   .agri-aroud {
     margin-left: 20px;
     width: 335px;
-    height: 300px;
+    // height: 300px;
+    height: calc(100% - 500px);
     overflow: auto;
 
     .agri-aroud-item {

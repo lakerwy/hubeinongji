@@ -1,5 +1,5 @@
 const rule = (form) => {
-  console.log(form, 'updateRule.js')
+  //console.log(form, 'updateRule.js')
   return {
     machineTypeForChange: [
       {required: true, message: '请选择农机类型', trigger: 'change'}

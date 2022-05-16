@@ -59,7 +59,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="审核类型：">
-              <el-select v-model="form.region" placeholder="请输入审核类型">
+              <el-select v-model="form.region" placeholder="请选择审核类型">
                 <el-option label="是" value="shanghai"></el-option>
                 <el-option label="否" value="beijing"></el-option>
               </el-select>

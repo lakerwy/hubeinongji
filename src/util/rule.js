@@ -34,14 +34,24 @@ export const rule = {
       callback()
     }
   },
+  //SIM卡号校验
+  isSimNumber(rule, value, callback) {
+    const reg =   /^[0-9]{3}$/ ;
+      if ((!reg.test(value)) && value != '') {
+        callback(new Error('SIM卡号码必须是纯数字!'));
+      } else {
+        callback(new Error('5656SIM卡号码必须是纯数字!'));
+      }
+  },
+
   /* 是否手机号码或者固话*/
   isPhoneTwo(rule, value, callback) {
-    const reg = /^((0\d{2,3}-\d{7,8})|(1[34578]\d{9}))$/;;
+    const reg = /^((0\d{2,3}-\d{7,8})|1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8})$/;
     if (value == '' || value == undefined || value == null) {
       callback();
     } else {
       if ((!reg.test(value)) && value != '') {
-        callback(new Error('请输入正确的电话号码或者固话号码'));
+        callback(new Error('请输入正确的电话号码'));
       } else {
         callback();
       }
@@ -59,6 +69,7 @@ export const rule = {
       callback();
     }
   },
+  /*是否是纬度范围*/
   isLat(rule, value, callback) {
     if (value == '' || value == undefined || value == null) {
       callback();
@@ -71,6 +82,7 @@ export const rule = {
     }
   }
 
+  
 
   // 校验规则根据不同业务需求，不断拓展补充 ...
 }

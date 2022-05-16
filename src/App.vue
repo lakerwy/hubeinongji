@@ -16,7 +16,7 @@
   text-align: left;
 }
 
-#nav {
+ #nav {
   padding: 30px;
 }
 

@@ -1,4 +1,5 @@
 import WMTSCapabilities from "ol/format/WMTSCapabilities";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 import WMTS, { optionsFromCapabilities } from "ol/source/WMTS";
 import { appendParams } from "ol/uri";
 import { Tile as TileLayer } from "ol/layer";
@@ -6,7 +7,7 @@ import { transformExtent } from "ol/proj";
 
 import { DEFAULT_PROJECTION } from "../common";
 import DxGeoServerImageLayer from "./geoserverImageLayer";
-import LAYER_DATA_TYPE from './layerDataType';
+import LAYER_DATA_TYPE from "./layerDataType";
 
 /**
  * @param  {Object} options
@@ -33,7 +34,7 @@ export async function getGeoServerLayer(options) {
       info.urls = [options.url]; // 采用代理地址
       layer = new TileLayer({
         source: new WMTS(info),
-        layerDateType:LAYER_DATA_TYPE.TILE,
+        layerDateType: LAYER_DATA_TYPE.TILE
       });
 
       if (layer) {
@@ -49,6 +50,15 @@ export async function getGeoServerLayer(options) {
       ...options,
       restOption: { styles: options.style, format: options.format }
     });
+
+    let wmsInfo = await getWMSLayerInfo(options);
+    if (wmsInfo && layer) {
+      layer.defaultExtent = transformExtent(
+        wmsInfo.extent,
+        "EPSG:4326",
+        DEFAULT_PROJECTION
+      );
+    }
   }
   return layer;
 }
@@ -85,6 +95,37 @@ export async function getWMTSLayerInfo(options) {
       format: options.format
     });
     return info;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function getWMSLayerInfo(options) {
+  options = { ...options };
+
+  let url = options.url;
+
+  let layers = options.layers;
+
+  let metaXmlUrl = appendParams(url, {
+    Service: "WMS",
+    request: "GetCapabilities"
+  });
+
+  try {
+    let response = await fetch(metaXmlUrl);
+    let text = await response.text();
+
+    let result = new WMSCapabilities().read(text);
+    let layer = result.Capability.Layer.Layer;
+    for (let i = 0; i < layer.length; i++) {
+      const x = layer[i];
+      if (layers.indexOf(x.Name) != -1) {
+        let extent = x.EX_GeographicBoundingBox;
+        return { extent };
+      }
+    }
+    return null;
   } catch (error) {
     return null;
   }

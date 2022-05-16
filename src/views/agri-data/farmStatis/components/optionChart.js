@@ -65,7 +65,7 @@ export default {
         },
         title: {
           offsetCenter: [0, '70%'],
-          fontSize: 12,
+          fontSize: 16,
           fontWeight: 900,
           color: "#5ed9a3"
         }
@@ -131,7 +131,7 @@ export default {
         },
         title: {
           offsetCenter: [0, '70%'],
-          fontSize: 12,
+          fontSize: 16,
           fontWeight: 900,
           color: "#1aaaff"
         }
@@ -196,12 +196,14 @@ export default {
         },
         title: {
           offsetCenter: [0, '70%'],
-          fontSize: 12,
+          fontSize: 16,
           fontWeight: 900,
           color: "#e97467"
         }
       }],
   },
+
+
   agriculOption: {
     tooltip: {
       trigger: 'item',
@@ -214,9 +216,7 @@ export default {
     },
     legend: {
       top: 0,
-      with: 30,
       orient: 'vertical',
-      fontSize: 50,
       right: 10,
       align: "left",
       textStyle: { //图例文字的样式
@@ -234,11 +234,11 @@ export default {
     title: {
       show: true,
       text: "农机分类\n   详情",
-      top: "38%",
-      left: "32.7%",
+      top: "45%",
+      left: "38%",
       textStyle: {
         color: "#FFFFFF",
-        fontSize: 15,
+        fontSize: 16,
         lineHeight: 18
       }
     },
@@ -246,38 +246,31 @@ export default {
       {
         name: '农机分类详情',
         type: 'pie',
-        radius: ['40%', '55%'],
-        center: ["40%", "45%"],
-        avoidLabelOverlap: false,
+        radius: ['55%', '73%'],
+        center: ["45%", "55%"],
+        avoidLabelOverlap : true,
+         startAngle:200,
         label: {
-          trigger: "mousemove",
           normal: {
             show: true,
-            // triggerOn: 'mousemove',
             formatter: params => {
               return (
-                params.name + '' + params.percent.toFixed(0) + '%'
+                params.name + '' + params.percent.toFixed(2) + '%'
               )
             },
             textStyle: {
-              // fontSize: this.standSize / 150,
-              // color: "#fff"
+              fontSize:14,
               color: "inherit",
             },
-            // padding: [0, 0, -20, 0],
-
           },
         },
         labelLine: {
           normal: {
+            show: true,
             lineStyle: {
               color: 'rgba(255, 255, 255, 0.3)'
             },
             smooth: 0.2,
-            // length: 20,
-            length2: 20
-            // length: this.standSize / 50,
-            // length2: this.standSize / 100,
           }
         },
         data: [
@@ -292,13 +285,103 @@ export default {
         ],
         itemStyle: {
           color: function(params){
-            var colorlist = ['#00e8f0',"#6357fc","#c3c24a","#08c29c","#2a61e4","#8267f8","#9ee655","#00a2ff"]
+            var colorlist = ['#00e8f0',"#6357fc","#c3c24a","#08c29c","#f3a3a4","#ff67ff","#9ee655","#00a2ff"]
             return colorlist[params.dataIndex]
           }
         }
       }
     ]
   },
+  
+  // agriculOption: {
+  //   tooltip: {
+  //     trigger: 'item',
+  //     showContent: true,
+  //     backgroundColor: 'rgba(8,36,68,.7)',
+  //     color: '#fff',
+  //     textStyle: {
+  //       color: '#fff'
+  //     },
+  //   },
+  //   legend: {
+  //     bottom: 0,
+  //     align: "left",
+  //     textStyle: { //图例文字的样式
+  //       color: '#aac2d6',
+  //       fontSize: 14
+  //     },
+  //     icon: "square",
+  //     itemStyle: {
+  //       borderCap: "butt"
+  //     },
+  //     itemHeight: 12,
+  //     itemWidth: 12,
+  //     borderRadius: 0,
+  //   },
+  //   title: {
+  //     show: true,
+  //     text: "农机分类\n   详情",
+  //     top: "33%",
+  //     left: "43%",
+  //     textStyle: {
+  //       color: "#FFFFFF",
+  //       fontSize: 16,
+  //       lineHeight: 18
+  //     }
+  //   },
+  //   series: [
+  //     {
+  //       name: '农机分类详情',
+  //       type: 'pie',
+  //       radius: ['45%', '60%'],
+  //       center: ["50%", "40%"],
+  //       avoidLabelOverlap : true,
+  //       label: {
+  //         position:"outside",
+  //         normal: {
+  //           show: true,
+  //           formatter: params => {
+  //             return (
+  //               params.name + '' + params.percent.toFixed(2) + '%'
+  //             )
+  //           },
+  //           textStyle: {
+  //             fontSize:14,
+  //             color: "inherit",
+  //           },
+  //         },
+  //       },
+  //       labelLine: {
+  //         showAbove:true,
+  //         normal: {
+  //           show: true,
+  //           lineStyle: {
+  //             color: 'rgba(255, 255, 255, 0.3)'
+  //           },
+  //           smooth: 0.2,
+  //         }
+  //       },
+  //       data: [
+  //         {value: 1048, name: '无人机'},
+  //         {value: 735, name: '玉米收割机'},
+  //         {value: 580, name: '烘干机'},
+  //         {value: 484, name: '喷杆喷雾机'},
+  //         {value: 300, name: '拖拉机'},
+  //         {value: 300, name: '插秧机'},
+  //         {value: 300, name: '稻麦收割机'},
+  //         {value: 300, name: '其他收割机'},
+  //       ],
+  //       itemStyle: {
+  //         color: function(params){
+  //           var colorlist = ['#00e8f0',"#6357fc","#c3c24a","#08c29c","#2a61e4","#8267f8","#9ee655","#00a2ff"]
+  //           return colorlist[params.dataIndex]
+  //         }
+  //       }
+  //     }
+  //   ]
+  // },
+
+  
   machToolOption: {
     tooltip: {
       showContent: true,
@@ -314,10 +397,10 @@ export default {
     },
     grid: {
       left: '25%',
-      right: '20%',
+      right: '13%',
       top: '6%',
-      bottom: "10%",
-      width: 230,
+      bottom: "0%",
+      // width: 290,
     },
     xAxis: [{
       splitLine: {
@@ -326,30 +409,45 @@ export default {
       type: 'value',
       show: false,
     }],
-    yAxis: [{
-      splitLine: {
-        show: false
-      },
-      axisLine: { //y轴
-        show: false
-      },
+    yAxis: [
+      {
+        splitLine: {
+          show: false
+        },
+        axisLine: { //y轴
+          show: false
+        },
 
-      type: 'category',
-      axisTick: {
-        show: false
+        type: 'category',
+        axisTick: {
+          show: false
+        },
+        inverse: true,
+        data: ['拖拉机机具', '松深机', '旋耕机', '灭茬机', '播种机', '耕地犁', '翻转犁', '打捆机'],
+        axisLabel: {
+          color: '#A7D6F4',
+          fontSize: 13,
+          // margin: 20,
+        },
       },
-      inverse: true,
-      data: ['拖拉机机具', '松深机', '旋耕机', '灭茬机', '播种机', '耕地犁', '翻转犁', '打捆机'],
-      axisLabel: {
-        color: '#A7D6F4',
-        fontSize: 14,
-        margin: 20,
-      },
-
-    }],
+      {
+        type: 'category',
+        inverse: true,
+        axisTick: 'none',
+        axisLine: 'none',
+        show: true,
+        axisLabel: {
+            textStyle: {
+                color: '#A7D6F4',
+                fontSize: '13'
+            },
+        },
+        data: value,
+      }
+    ],
     series: [
       {
-        name: '农机数量',
+        name: '机具数量',
         type: 'bar',
         barWidth: 10, // 柱子宽度
         showBackground: true,
@@ -358,14 +456,15 @@ export default {
           color: "#0c3151"
         },
         label: {
-          show: true,
-          color: '#A7D6F4',
-          fontSize: 14,
-          distance: 20, // 距离
-          formatter: '{c} ', // 这里是数据展示的时候显示的数据
-          align: "center",
-          // position:"right"
-          position: [260, 0]
+          // show: true,
+          show: false,
+          // color: '#A7D6F4',
+          // fontSize: 13,
+          // distance: 20, // 距离
+          // formatter: '{c} ', // 这里是数据展示的时候显示的数据
+          // align: "center",
+          // position:"right",
+          // position: [320, 0],
         }, // 柱子上方的数值
         itemStyle: {
           barBorderRadius: [0, 0, 0, 0], // 圆角（左上、右上、右下、左下）
@@ -379,12 +478,13 @@ export default {
             offset: 1,
             color: '#51C5FD'
           }
-
           ], false), // 渐变
         },
         data: [400, 380, 360, 340, 320, 300, 280, 260]
       },]
   },
+
+
   areaOption: {
     tooltip: {
       showContent: true,
@@ -400,25 +500,25 @@ export default {
       "fontSize": 14
     },
     legend: {
-      "top": "4%",
+      top: "4%",
       left: '75%',
       "itemWidth": 13,
       "itemHeight": 13,
       itemStyle: {
-        color: "#24C384"
+        color: "#18A4FF"
       },
       "icon": "rect",
       "padding": 0,
       textStyle: {
         "color": "#c0c3cd",
-        fontSize: 14,
+        fontSize: 13,
         "padding": [2, 0, 0, 0]
       }
     },
     grid: {
       top: '23%',
       left: '14%',
-      bottom: '20%',
+      bottom: '25%',
       right: '10%'
     },
     xAxis: {
@@ -430,6 +530,12 @@ export default {
       axisLabel: {
         interval: 0,
         rotate: '45',
+        formatter: function (value) {
+          if (value.length > 3) {
+            return `${value.slice(0, 2)}...`;
+          }
+          return value;
+        },
         textStyle: {
           color: '#639FD2' //坐标轴字颜色
         },
@@ -493,14 +599,17 @@ export default {
           }
         },
         "label": {
-          "show": false,
+          "show": true,
           "position": "top",
           "distance": 10,
-          "color": "#fff"
+          "color": "#fff",
+          "fontSize":13
         }
       },
     ],
   },
+
+
   installOption: {
     legend: {
       icon: 'line',
@@ -571,7 +680,7 @@ export default {
       }
     ],
     series: [{
-      name: "作业面积(亩)",
+      name: "安装趋势(台)",
       type: "line",
       smooth: true,
       showSymbol: false,
@@ -610,6 +719,8 @@ export default {
       data: value
     }]
   },
+
+
   terminalOption: {
     tooltip: {
       showContent: true,
@@ -621,7 +732,7 @@ export default {
       },
     },
     legend: {
-      top: "4%",
+      top: "1%",
       right: '5%',
       itemWidth: 13,
       itemHeight: 13,
@@ -632,7 +743,7 @@ export default {
       padding: 0,
       textStyle: {
         color: "#c0c3cd",
-        fontSize: 14,
+        fontSize: 15,
         padding: [2, 0, 0, 0]
       }
     },
@@ -643,7 +754,7 @@ export default {
         left: '12%',
         top: '20%',
         bottom: '0',
-        width: '28%'
+        width: '36%'
       },
       // 右边柱子
       {
@@ -651,7 +762,7 @@ export default {
         left: '62%',
         top: '20%',
         bottom: '0',
-        width: '28%'
+        width: '36%'
       }
     ],
     xAxis: [
@@ -681,10 +792,10 @@ export default {
         axisLabel: {
           show: true,
           align: 'left',
-          textStyle: {
-            color: '#66cc00',
+          // textStyle: {
+          //   color: '#66cc00',
 
-          },
+          // },
           formatter: function (value, index) {
             var num = ''
             var str = '';
@@ -711,6 +822,7 @@ export default {
               height: 24,
               fontSize: 16,
               align: 'center',
+              verticalAlign: "bottom",
             },
             num1: {
               color: '#fff',
@@ -764,9 +876,9 @@ export default {
         axisLabel: {
           show: true,
           align: 'left',
-          textStyle: {
-            color: '#66cc00',
-          },
+          // textStyle: {
+          //   color: '#66cc00',
+          // },
           formatter: function (value, index) {
             var num = ''
             var str = '';
@@ -786,6 +898,7 @@ export default {
               height: 24,
               fontSize: 16,
               align: 'center',
+              verticalAlign: "bottom",
             },
           }
         },
@@ -812,22 +925,28 @@ export default {
           normal: {
             show: true,
             formatter: (series) => {
-              // return '品牌' + series.name;
-              return '{name|'+series.name+'}'+'{value|'+series.value+'}'
-            },
-            rich: {
-              name: {
-                width: 140,
-                padding: [-18,0,0,0]
-              },
-              value: {
-                padding: [18,0,0,0],
+              if(series.name.length > 8){
+                series.name = `${series.name.slice(0, 8)}...`;
               }
+              return series.name+" （"+series.value+"）";
+
             },
+            // rich: {
+            //   name: {
+            //     width:120,
+            //     // width: '110%',
+            //     padding: [-18,0,0,0]
+            //   },
+            //   value: {
+            //     // width: '110%',
+            //     padding: [18,0,0,50],
+            //   }
+            // },
             position: 'insideTopLeft',
+            // position: 'left',
             textStyle: {
               color: '#80c5ff',
-              fontSize: 12
+              fontSize: 14
             },
             offset: [0, -25]
           }
@@ -852,22 +971,26 @@ export default {
         label: {
           normal: {
             show: true,
-            formatter: series => {
-              return '{name|'+series.name+'}'+'{value|'+series.value+'}'
-            },
-            rich: {
-              name: {
-                width: 140,
-                padding: [-18,0,0,0]
-              },
-              value: {
-                padding: [18,0,0,0],
+            formatter: (series) => {
+              if(series.name.length > 8){
+                series.name = `${series.name.slice(0, 8)}...`;
               }
+              // return '{name|'+series.name+'}'+'{value|'+series.value+'}';
+              return series.name+" （"+series.value+"）";
             },
+            // rich: {
+            //   name: {
+            //     width: 140,
+            //     padding: [-18,0,0,0]
+            //   },
+            //   value: {
+            //     padding: [18,0,0,0],
+            //   }
+            // },
             position: 'insideTopLeft',
             textStyle: {
               color: '#80c5ff',
-              fontSize: 12
+              fontSize: 14
             },
             offset: [0, -25]
           }

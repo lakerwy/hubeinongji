@@ -83,7 +83,7 @@ export const tableOption = {
     label: '用户类型',
     prop: 'usertype',
     formatter:function (val) {
-      console.log("this.userTypes",this.userTypes)
+      //console.log("this.userTypes",this.userTypes)
       if(this.userTypes){
         this.userTypes.forEach((ele,index)=>{
           if(ele.itemCode==val){

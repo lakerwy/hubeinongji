@@ -4,22 +4,22 @@
       class="dialog"
       title="查询终端"
       :visible.sync="searchVisible"
-      :width="'900px'"
+      :width="'1100px'"
       top="30vh"
     >
       <div class="content">
-        <el-form ref="form" :model="searchForm" label-width="100px" :inline="true">
-          <el-form-item label="终端编号：">
-            <el-input v-model="searchForm.terminalCode" placeholder="请输入终端编号：" ></el-input>
+        <el-form ref="form" :model="searchForm" label-width="90px" :inline="true">
+          <el-form-item label="终端编号:">
+            <el-input v-model="searchForm.terminalCode" placeholder="请输入终端编号" ></el-input>
           </el-form-item>
-          <el-form-item label="是否包含SIM卡：" label-width="150px">
+          <el-form-item label="是否包含SIM卡:" label-width="150px">
             <el-select v-model="searchForm.containSim" clearable>
               <el-option label="是" value="Y"></el-option>
               <el-option label="否" value="N"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="SIM卡号码：">
-            <el-input v-model="searchForm.simNumber" placeholder="请输入SIM卡号码："></el-input>
+          <el-form-item label="SIM卡号码:">
+            <el-input v-model="searchForm.simNumber" placeholder="请输入SIM卡号码"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button style="margin-left: 30px" type="primary" class="shadow-btn" round @click="searchTerminalList" >查询</el-button>
@@ -107,7 +107,7 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 100,
+        total: 0,
       }
     }
   },

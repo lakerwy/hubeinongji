@@ -44,7 +44,6 @@ export default {
 .content-box {
   text-align: left;
   width: 477px;
-  margin-bottom: 10px;
   background: url("../../assets/images/kuang_bg.png");
   background-size: 100% 100%;
   .active {

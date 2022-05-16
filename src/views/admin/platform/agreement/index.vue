@@ -13,18 +13,20 @@
         <el-form-item label="通信端口号:">
           <el-input v-model="model" placeholder="请选择通信端口号" ></el-input>
         </el-form-item>
-        <el-button class="shadow-btn"  round >查询</el-button>
+        <el-button class="shadow-btn"  round  v-if="btnPermis.btnView">查询</el-button>
       </el-form>
       <div class="my-table">
-        <div class="avue-crud__menu">
+        <div class="avue-crud__menu" v-if="btnPermis.btnAdd || btnPermis.btnDelete">
           <div class="avue-crud__left">
             <el-button
+              v-if="btnPermis.btnAdd"
               class="shadow-btn"
               plain
               round
               size="mini"
               @click="handleCreate">新增</el-button>
             <el-button
+              v-if="btnPermis.btnDelete"
               class="shadow-btn"
               plain
               round
@@ -79,6 +81,7 @@
 import titleBox from '_com/contenBox/titleBox.vue'
 import myPagination from '_com/myPagination/index.vue'
 import EditInfoDialog from "./dialog/editInfo"
+import {mapGetters} from "vuex";
 
 export default {
   name: 'department',
@@ -93,7 +96,7 @@ export default {
       page: {
         currentPage: 1,
         pageSize: 10,
-        total: 0
+        total: 4
       },
       
       columns: [
@@ -117,9 +120,29 @@ export default {
       showMaps: false,
       model: '',
       editTitle: '',
+      btnPermis: {  //按钮权限
+        btnView: true,
+        btnAdd: true,
+        btnEdit: true,
+        btnDelete: true,
+      }
     }
   },
+  created() {
+    this.getBtnPermis();
+  },
+  computed: {
+    ...mapGetters(['permissions']),
+  },
   methods: {
+    getBtnPermis() {
+      this.btnPermis.btnView = this.permissions[window.global.buttonPremission.protocolView];
+      this.btnPermis.btnAdd = this.permissions[window.global.buttonPremission.protocolAdd];
+      this.btnPermis.btnEdit = this.permissions[window.global.buttonPremission.protocolEdit];
+      this.btnPermis.btnDelete = this.permissions[window.global.buttonPremission.protocolDelete];
+      //console.log('this.btnPermis',this.btnPermis)
+      //console.log('this.permissions',this.permissions)
+    },
     initData() {
 
     },
@@ -147,7 +170,7 @@ export default {
         this.$message.info('请选择需要删除的分组');
         return;
       }
-      this.$confirm('是否确认删除选中的数据?', '警告', {
+      this.$confirm('是否确认删除选中的数据?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

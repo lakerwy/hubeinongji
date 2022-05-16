@@ -31,25 +31,18 @@ module.exports = {
 	devServer: {
 		proxy: {
 			"/arcgis": {
-        target: "http://223.75.53.178:8399", // 目标代理接口地址
-        secure: false,
-        changeOrigin: true,
-        pathRewrite: {
-          "^/arcgis/": "/arcgis/"
-        }
-      },
-			'/api_detail': { // 农机详情
-				target: 'http://192.168.99.78:8890/', //韩
+				target: "http://223.75.53.178:8399", // 目标代理接口地址
+				secure: false,
 				changeOrigin: true,
-				ws: true,
 				pathRewrite: {
-					'^/api_detail': '/'
+					"^/arcgis/": "/arcgis/"
 				}
 			},
 			'/': { // 总的后台接口,放在最后
 				// target: 'http://192.168.99.78:9999', //韩
 				// target: 'http://192.168.99.61:9999/', //田
 				target: 'http://192.168.250.116:9999', //柯
+				// target: 'http://192.168.99.189:9999', //车
 				changeOrigin: true,
 				ws: true,
 				pathRewrite: {

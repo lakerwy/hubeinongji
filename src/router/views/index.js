@@ -1,11 +1,14 @@
 import Layout from '@/components/layout/index.vue'
 
-export default [
+
+
+
+/*export default [
   {
     path: '/login',
     name: 'login',
     component: () =>
-      import(/* webpackChunkName: "page" */ '@/views/login/index'),
+      import(/!* webpackChunkName: "page" *!/ '@/views/login/index'),
     meta: {
       keepAlive: true,
       isTab: false,
@@ -26,24 +29,24 @@ export default [
         path: '/agri-data',
         name: 'agri-data',
         component: () =>import('@/views/agri-data/index.vue'),
-        redirect: '/onemap',
+        redirect: '/farmStatis',
         children: [
+          {
+            path: '/farmStatis',
+            name: 'farmStatis',
+            component: () => import('../../views/agri-data/farmStatis/index')
+          },
+          {
+            path: '/workStatis',
+            name: 'workStatis',
+            component: () => import('@/views/agri-data/workStatis')
+          },
           {
             path: '/onemap',
             name: 'onemap',
             component: () => import('@/views/agri-data/onemap'),
 
           },
-          {
-            path: '/farmStatis',
-            name: 'farmStatis',
-            component: () => import('@/views/agri-data/farmStatis')
-          },
-          {
-            path: '/workStatis',
-            name: 'workStatis',
-            component: () => import('@/views/agri-data/workStatis')
-          }
         ]
       }, 
       {
@@ -310,7 +313,18 @@ export default [
     path: 'index',
     name: '个人信息',
     component: () =>
-      import(/* webpackChunkName: "page" */ '@/views/admin/user/info')
+      import(/!* webpackChunkName: "page" *!/ '@/views/admin/user/info')
   }]
-},]
+},]*/
 
+export default [{
+    path: '/info',
+    component: Layout,
+    redirect: '/info/index',
+    children: [{
+        path: 'index',
+        name: '个人信息',
+        component: () =>
+            import(/* webpackChunkName: "page" */ '@/views/admin/user/info')
+    }]
+}]

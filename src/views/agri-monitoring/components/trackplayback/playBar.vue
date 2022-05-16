@@ -2,6 +2,7 @@
   <div
     class="controlContainer"
     ref="controlContainer"
+
   >
     <div class="control"></div>
     <div
@@ -38,9 +39,12 @@ export default {
       showTip: true, // 显示进度条值
       // tipValue: 12, // 进度条值
       showCircle: true,
-      controlDivLeft: 0, // 进度条的left
+      // controlDivLeft: 0, // 进度条的left
       percent: 0,
     };
+  },
+  updated() {
+    // //console.log("playBar is update:",this.percent);
   },
   computed: {
     leftWidth: function () { // 球的位置 进度的长度
@@ -53,7 +57,7 @@ export default {
     }
   },
   mounted() {
-    this.controlDivWidth = this.$refs.controlContainer.offsetWidth;
+    this.controlDivWidth = this.$refs.controlContainer.offsetWidth - 10;
     // this.controlDivLeft = this.$refs.controlContainer.offsetLeft;
     // this.circleLeft = this.controlDivLeft;
   },

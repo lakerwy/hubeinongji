@@ -6,6 +6,7 @@
       v-for="(item,index) in staTypes"
       :key="item.id"
       @click="changeType(item, index)">
+      <img class="selectImg" :class="{'showimg': currentIndex === index}" src="../../../assets/images/agri-monitoring-select.png" alt="">
       <p
         class="sta"
         :style="[{'color': item.id === 1 ? '#b7afff' : item.id === 2 ? '#3cfad3' : item.id === 3 ? '#f4b350'
@@ -41,19 +42,37 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@media screen and (max-width:1600px) {
+  .statics-box{
+    width: 45% !important;
+  }
+}
 .statics-box {
-  width: 850px;
+  // width: 850px;
+  width: 50%;
   display: flex;
   justify-content: space-between;
 
   .box {
-    width: 204px;
+    // width: 204px;
+    width: 24%;
     height: 94px;
     background-color: #04122c;
     box-shadow: inset 2px 0px 16px 0px rgba(50, 111, 166, 0.8);
     border: solid 1px #1c91ff;
     text-align: center;
     cursor: pointer;
+    position: relative;
+
+    .selectImg{
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .showimg{
+        display: inline-block;
+    }
 
     .sta {
       color: #3cfad3;
@@ -78,7 +97,6 @@ export default {
   }
 
   .active {
-    background-color: #04122c;
     box-shadow: inset 0px 0px 50px 0px rgba(0, 134, 255, 0.7);
   }
 }

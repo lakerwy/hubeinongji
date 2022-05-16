@@ -2,7 +2,8 @@
   <div class="machtool">
     <TitleBox class="title" :headName="'生产资源管理'"/>
     <div class="content">
-      <ContTable />
+      <ContTable v-if="!isMap" @changView="changView" :isMap="isMap" />
+      <ProductMap v-if="isMap" @changView="changView" :isMap="isMap" />
     </div>
   </div>
 </template>
@@ -10,15 +11,23 @@
 <script>
 import TitleBox from "../../../components/contenBox/titleBox";
 import ContTable from "./component/contTable"
+import ProductMap from '../productMap'
 
 export default {
   name: "index",
   components: {
     TitleBox,
-    ContTable
+    ContTable,
+    ProductMap
   },
   data(){
     return{
+      isMap:false
+    }
+  },
+  methods:{
+    changView(payload){
+      this.isMap = payload
     }
   }
 }
@@ -31,7 +40,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  width: calc(100% - 227px);
+  width: 100%;
   height: 100%;
 
   .title {

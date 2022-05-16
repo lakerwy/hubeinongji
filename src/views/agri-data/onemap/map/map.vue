@@ -7,6 +7,7 @@
           :id="item.id"
           :key="index"
           :name="item.name"
+          :visble="item.visible"
           :dataSource="item.dataSource"
           :styles="item.styles"
           :hoverStyles="item.hoverStyles"
@@ -98,7 +99,7 @@ export default {
         let coordinate = getCenterByFeature(feature);
         this.$refs.mapCom.map.getView().fit(feature.getGeometry(), {
           maxZoom: 15,
-          duration: 500,
+          duration: 1000,
           callback: () => {
             // 弹出要素事件
             // this.handleClick({ coordinate: c }, feature);
