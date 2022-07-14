@@ -371,7 +371,7 @@ export function getQueryString(url, paraName) {
  * @param {*} props 对象，{labelkey: '', valueKey: ''},当前数据对应的可以 value
  * @param {*} data 原始数据,数组
  */
-export function filterDict(value, props = {labelKey: 'label', valueKey: 'value'}, data) {
+export function filterDict(value, data, props = {labelKey: 'label', valueKey: 'value'}) {
     if (!data) return value
     let arr = data.filter(item => item[props.valueKey] == value);
     let res = arr.length > 0 ? arr[0][props.labelKey] : '无';

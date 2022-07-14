@@ -287,6 +287,7 @@ export function validatenull(val) {
 export function validatePasswordStrong(val) {
     var patrn = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]{8,18}$/;
     // var patrn = /^(?![a-zA-z]+$)(?!\d+$)(?!\W+$)(?![a-zA-z\d]+$)(?![a-zA-z\W]+$)(?![\d\W]+$)[a-zA-Z\d\W]{8,18}$/;
+    // /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,30}$/
     return patrn.test(val)
 }
 
